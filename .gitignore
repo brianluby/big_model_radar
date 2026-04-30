@@ -1,4 +1,9 @@
 .env
+.env.local
+run-local.env
+run-local.sh
+run-weekly.sh
+run-monthly.sh
 .DS_Store
 node_modules/
 dist/

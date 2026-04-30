@@ -8,14 +8,16 @@ import path from "node:path";
 
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 const DEFAULT_MODEL = "gpt-4.1-mini";
+const DEFAULT_MAX_TOKENS = 6144;
 
-// ---------------------------------------------------------------------------
-// Concurrency limiter — prevents rate-limit (429) errors when many LLM calls
-// are fired in parallel. At most LLM_CONCURRENCY requests are in-flight at
-// any given time; the rest queue and run as slots free up.
-// ---------------------------------------------------------------------------
+function parsePositiveIntEnv(name: string, fallback: number): number {
+  const raw = process.env[name]?.trim();
+  if (!raw) return fallback;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
 
-const LLM_CONCURRENCY = 5;
+const LLM_CONCURRENCY = parsePositiveIntEnv("LLM_CONCURRENCY", 5);
 let llmSlots = LLM_CONCURRENCY;
 const llmQueue: Array<() => void> = [];
 
@@ -96,7 +98,7 @@ function extractTextContent(content: unknown): string {
   throw new Error("Unexpected response type from LLM");
 }
 
-export async function callLlm(prompt: string, maxTokens = 4096): Promise<string> {
+export async function callLlm(prompt: string, maxTokens = DEFAULT_MAX_TOKENS): Promise<string> {
   for (let attempt = 0; ; attempt++) {
     await acquireSlot();
     let released = false;
