@@ -1,97 +1,97 @@
-# AI 官方内容追踪报告 2026-04-18
+# AI Official Content Tracking Report 2026-04-18
 
-> 今日更新 | 新增内容: 68 篇 | 生成时间: 2026-04-18 01:08 UTC
+> Today's updates | New content: 68 posts | Generated: 2026-04-18 01:08 UTC
 
-数据来源:
-- Anthropic: [anthropic.com](https://www.anthropic.com) — 新增 2 篇（sitemap 共 337 条）
-- OpenAI: [openai.com](https://openai.com) — 新增 66 篇（sitemap 共 771 条）
-
----
-
-# AI 官方内容追踪报告（2026-04-18）
+Data sources:
+- Anthropic: [anthropic.com](https://www.anthropic.com) — 2 new posts (337 sitemap entries total)
+- OpenAI: [openai.com](https://openai.com) — 66 new posts (771 sitemap entries total)
 
 ---
 
-## 1. 今日速览
-
-Anthropic 发布 **Claude Opus 4.7**，重点强化高级软件工程能力与视觉理解，并首次在非旗舰模型中部署网络安全防护机制，作为其“安全先行”策略的试验田；同时推出 **Claude Design**，由 Anthropic Labs 打造，标志着其从通用助手向专业创意协作工具的延伸。  
-OpenAI 虽未发布新模型，但单日密集更新 **66 篇官方内容**，涵盖全球政策、经济蓝图、董事会人事变动（新增 Adebayo Ogunlesi 与 Zico Kolter）、国家安全立场及 Stargate 项目进展，显示出极强的战略协同与政企关系布局。  
-值得注意的是，OpenAI 在无法提取具体内容的情况下仍批量更新页面，暗示其正在进行大规模内容架构重组或后台系统迁移，可能为即将发布的重大产品（如 GPT-Rosalind）做准备。
+# AI Official Content Tracking Report (2026-04-18)
 
 ---
 
-## 2. Anthropic / Claude 内容精选
+## 1. Today's Highlights
+
+Anthropic released **Claude Opus 4.7**, with emphasis on advanced software-engineering capability and visual understanding, and deployed cybersecurity safeguards in a non-flagship model for the first time as a testbed for its "safety-first" strategy. It also launched **Claude Design**, built by Anthropic Labs, marking an extension from general assistant toward professional creative collaboration tools.  
+Although OpenAI did not release a new model, it updated **66 official items** in a single day, covering global policy, economic blueprints, board changes with Adebayo Ogunlesi and Zico Kolter, national-security positioning, and Stargate project progress. This shows strong strategic coordination and public/private-sector relationship building.  
+Notably, OpenAI batch-updated pages even though concrete content could not be extracted, suggesting a large-scale content-architecture reorganization or backend-system migration, possibly preparing for a major upcoming product such as GPT-Rosalind.
+
+---
+
+## 2. Anthropic / Claude Content Highlights
 
 ### 📰 News
 
-#### [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7)（2026-04-17）
-> Claude Opus 4.7 在高级软件工程任务上显著优于 4.6，用户可放心将此前需人工监督的复杂编码工作交予模型处理；模型具备更强的自我验证能力，能在输出前检查逻辑一致性。  
-> 视觉能力大幅升级，支持更高分辨率图像输入，并在界面设计、幻灯片生成等专业创作场景中表现出更优的审美与实用性。  
-> **关键战略信号**：明确提及该模型是 Project Glasswing 网络安全测试的首个“降级能力”试验平台——即在训练中主动抑制部分网络攻击能力，以验证安全护栏有效性，体现 Anthropic“能力克制+安全前置”的研发哲学。
+#### [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) (2026-04-17)
+> Claude Opus 4.7 significantly outperforms 4.6 on advanced software-engineering tasks, allowing users to entrust the model with complex coding work that previously required human supervision. The model has stronger self-verification and can check logical consistency before output.  
+> Its vision capability is substantially upgraded, supporting higher-resolution image input and showing better aesthetics and practicality in professional creative scenarios such as interface design and slide generation.  
+> **Key strategic signal**: the announcement explicitly says this model is the first "reduced-capability" test platform for Project Glasswing cybersecurity testing, meaning some cyberattack capabilities are actively suppressed during training to validate safety guardrails. This reflects Anthropic's R&D philosophy of "capability restraint plus safety first."
 
-#### [Introducing Claude Design by Anthropic Labs](https://www.anthropic.com/news/claude-design-anthropic-labs)（2026-04-17）
-> Claude Design 是一个面向专业视觉创作的协作工具，支持从原型、线框图到一页纸方案的全流程生成，深度融合 Opus 4.7 的 vision 能力。  
-> 支持通过自然语言对话、内联注释、直接编辑及自动生成的自定义滑块进行迭代，并可自动应用企业设计系统以确保品牌一致性。  
-> **产品定位**：填补非设计师（如 PM、创始人）与专业设计师之间的协作鸿沟，推动“AI 原生设计工作流”落地，属于 Anthropic Labs 探索前沿产品形态的典型尝试。
+#### [Introducing Claude Design by Anthropic Labs](https://www.anthropic.com/news/claude-design-anthropic-labs) (2026-04-17)
+> Claude Design is a collaboration tool for professional visual creation that supports full-flow generation from prototypes and wireframes to one-page proposals, deeply integrating Opus 4.7's vision capabilities.  
+> It supports iteration through natural-language dialogue, inline comments, direct editing, and automatically generated custom sliders, and can automatically apply enterprise design systems to maintain brand consistency.  
+> **Product positioning**: it fills the collaboration gap between non-designers such as PMs and founders and professional designers, promotes adoption of "AI-native design workflows," and is a typical Anthropic Labs attempt to explore frontier product forms.
 
 ---
 
-## 3. OpenAI 内容精选
+## 3. OpenAI Content Highlights
 
-> 注：由于 OpenAI 官网今日 66 篇内容均无法提取文本（可能因反爬机制或动态渲染），以下基于 URL 路径、分类标签及历史上下文进行推断性整理。
+> Note: Because none of OpenAI's 66 items today exposed extractable text, possibly due to anti-scraping mechanisms or dynamic rendering, the following is inferential organization based on URL paths, category tags, and historical context.
 
 ### 🏢 Company & Governance
-- **[Adebayo Ogunlesi Joins OpenAI’s Board of Directors](https://openai.com/index/adebayo-ogunlesi-joins-openais-board-of-directors/)**（2026-04-17）  
-  全球基础设施投资巨头 Global Infrastructure Partners 主席加入，强化 OpenAI 在能源、数据中心与地缘政治资源方面的战略纵深，呼应 Stargate 项目对超算基建的需求。
-- **[Zico Kolter Joins OpenAI’s Board of Directors](https://openai.com/index/zico-kolter-joins-openais-board-of-directors/)**（2026-04-17）  
-  卡内基梅隆大学教授、AI 安全专家加盟，凸显 OpenAI 对技术治理与前沿风险研究的重视，可能为 Mythic 级模型发布铺路。
+- **[Adebayo Ogunlesi Joins OpenAI’s Board of Directors](https://openai.com/index/adebayo-ogunlesi-joins-openais-board-of-directors/)** (2026-04-17)  
+  The chair of Global Infrastructure Partners, a global infrastructure investment giant, joins the board, strengthening OpenAI's strategic depth in energy, data centers, and geopolitical resources, and matching Stargate's need for supercomputing infrastructure.
+- **[Zico Kolter Joins OpenAI’s Board of Directors](https://openai.com/index/zico-kolter-joins-openais-board-of-directors/)** (2026-04-17)  
+  The Carnegie Mellon professor and AI safety expert joins the board, highlighting OpenAI's emphasis on technical governance and frontier-risk research, possibly paving the way for Mythic-level model releases.
 
 ### 🌍 Global Affairs & Policy
-- **[OpenAI’s Approach to AI and National Security](https://openai.com/global-affairs/openais-approach-to-ai-and-national-security/)**（2026-04-17）  
-  首次系统阐述国家安全立场， likely 回应美国国会质询（见 Sam Altman Senate Questions），强调“可控前沿”与“防御优先”。
-- **[OpenAI’s EU Economic Blueprint](https://openai.com/global-affairs/openais-eu-economic-blueprint/)** 及 **[Japan/South Korea/Australia Economic Blueprints](https://openai.com/index/japan-economic-blueprint/)**（2026-04-17）  
-  密集发布多国经济蓝图，表明 OpenAI 正将 AI 能力打包为国家级数字化转型方案，推动政府合作与监管合规并行。
+- **[OpenAI’s Approach to AI and National Security](https://openai.com/global-affairs/openais-approach-to-ai-and-national-security/)** (2026-04-17)  
+  This appears to be the first systematic statement of OpenAI's national-security position, likely responding to US congressional questioning, such as Sam Altman Senate Questions, and emphasizing a "controllable frontier" and "defense first."
+- **[OpenAI’s EU Economic Blueprint](https://openai.com/global-affairs/openais-eu-economic-blueprint/)** and **[Japan/South Korea/Australia Economic Blueprints](https://openai.com/index/japan-economic-blueprint/)** (2026-04-17)  
+  The dense release of multi-country economic blueprints indicates that OpenAI is packaging AI capability as a national digital-transformation solution, advancing government cooperation alongside regulatory compliance.
 
 ### 💼 Product & Ecosystem
-- **[Introducing GPT Rosalind](https://openai.com/index/introducing-gpt-rosalind/)**（2026-04-18，重复发布两次）  
-  命名致敬 DNA 结构发现者 Rosalind Franklin，强烈暗示该模型在**科学推理、生物计算或结构化知识生成**方面有突破，或为 Codex 下一代或专用科学助手。
-- **[OpenAI to Acquire Promptfoo](https://openai.com/index/openai-to-acquire-promptfoo/)**（2026-04-18）  
-  收购提示词工程与测试框架公司，强化开发者工具链，提升模型可观测性与可靠性，应对企业级部署需求。
-- **[Put AI to Work for Your Product Team](https://openai.com/index/put-ai-to-work-for-your-product-team/)**（2026-04-17）  
-  面向产品团队的垂直解决方案宣传，可能集成 GPT-Rosalind 或新 Agent 能力，推动内部工具外化。
+- **[Introducing GPT Rosalind](https://openai.com/index/introducing-gpt-rosalind/)** (2026-04-18, published twice)  
+  The name honors DNA-structure discoverer Rosalind Franklin and strongly suggests a breakthrough in **scientific reasoning, biocomputing, or structured knowledge generation**, or possibly a next-generation Codex or dedicated scientific assistant.
+- **[OpenAI to Acquire Promptfoo](https://openai.com/index/openai-to-acquire-promptfoo/)** (2026-04-18)  
+  The acquisition of a prompt-engineering and testing-framework company strengthens the developer toolchain, improves model observability and reliability, and addresses enterprise deployment needs.
+- **[Put AI to Work for Your Product Team](https://openai.com/index/put-ai-to-work-for-your-product-team/)** (2026-04-17)  
+  Marketing for a vertical solution aimed at product teams, possibly integrating GPT-Rosalind or new Agent capabilities and externalizing internal tools.
 
 ### 🔒 Safety & Compliance
-- **[Our Approach to Frontier Risk](https://openai.com/global-affairs/our-approach-to-frontier-risk/)**（2026-04-17）  
-  更新前沿风险治理框架， likely 包含对 Mythic 级模型的评估流程，与 Anthropic 的 Project Glasswing 形成跨公司呼应。
-- **[Response to NIST Executive Order on AI](https://openai.com/global-affairs/response-to-nist-executive-order-on-ai/)**（2026-04-17）  
-  积极回应美国国家标准与技术研究院指令，展现合规主动性，为联邦采购铺路。
+- **[Our Approach to Frontier Risk](https://openai.com/global-affairs/our-approach-to-frontier-risk/)** (2026-04-17)  
+  Updates the frontier-risk governance framework and likely includes evaluation procedures for Mythic-level models, echoing Anthropic's Project Glasswing across companies.
+- **[Response to NIST Executive Order on AI](https://openai.com/global-affairs/response-to-nist-executive-order-on-ai/)** (2026-04-17)  
+  Actively responds to directives from the US National Institute of Standards and Technology, showing proactive compliance and paving the way for federal procurement.
 
 ---
 
-## 4. 战略信号解读
+## 4. Strategic Signal Interpretation
 
-| 维度 | Anthropic | OpenAI |
+| Dimension | Anthropic | OpenAI |
 |------|----------|--------|
-| **技术优先级** | **垂直能力深化**：聚焦软件工程、视觉创作等高价值场景；**安全实验先行**：在 Opus 4.7 上测试网络防御机制，为 Mythos 铺路 | **广度扩张+政企整合**：通过多国经济蓝图、国家安全立场、董事会扩容，构建“AI 基础设施运营商”形象；**科学智能突破**：GPT-Rosalind 暗示向科研深水区进军 |
-| **产品化路径** | 从通用模型 → 专业工具（Claude Design），走“精品化+场景嵌入”路线 | 从 API/ChatGPT → 国家/企业解决方案（Stargate、经济蓝图），走“平台化+生态绑定”路线 |
-| **安全策略** | **能力克制主义**：主动降低非旗舰模型的网络能力，强调“可验证安全” | **制度合规主义**：通过董事会、政策响应、NIST 合作建立“可信前沿”形象 |
-| **竞争态势** | **议题引领者**：在 AI 安全测试方法论（Project Glasswing）上设定行业标准 | **资源整合者**：凭借 Stargate、亚马逊合作、全球政策网络占据生态制高点 |
+| **Technical priority** | **Deeper vertical capability**: focuses on high-value scenarios such as software engineering and visual creation; **safety experiments first**: tests cyber-defense mechanisms on Opus 4.7 and prepares the path for Mythos | **Broad expansion plus public/private-sector integration**: builds an "AI infrastructure operator" image through multi-country economic blueprints, national-security positioning, and board expansion; **scientific intelligence breakthrough**: GPT-Rosalind hints at moving into deep scientific research |
+| **Productization path** | Moves from general models to professional tools such as Claude Design, following a "premium and scenario-embedded" route | Moves from API/ChatGPT to national and enterprise solutions such as Stargate and economic blueprints, following a "platform plus ecosystem binding" route |
+| **Safety strategy** | **Capability restraint**: actively reduces cyber capability in non-flagship models and emphasizes "verifiable safety" | **Institutional compliance**: builds a "trusted frontier" image through board members, policy responses, and NIST cooperation |
+| **Competitive posture** | **Agenda leader**: sets industry standards in AI safety-testing methodology through Project Glasswing | **Resource integrator**: uses Stargate, Amazon cooperation, and a global policy network to occupy the ecosystem high ground |
 
-> **关键判断**：Anthropic 正在成为“AI 安全实验室”的标杆，而 OpenAI 正转型为“AI 国家基础设施供应商”。两者在技术路线上趋同（均重视安全），但在商业化路径上分道扬镳。
-
----
-
-## 5. 值得关注的细节
-
-- **“Claude Design by Anthropic Labs”** 的命名方式表明：Anthropic 正将 Labs 作为创新孵化器，类似 Google X，未来或独立推出更多垂直产品。
-- OpenAI 单日 66 篇更新中，**“Economic Blueprint” 系列覆盖 EU、Japan、South Korea、Australia**，唯独缺少中国，反映其地缘战略选择。
-- **GPT-Rosalind 重复发布两次**（同一 URL 出现两次），可能为 A/B 测试不同 landing page，或系统错误，但更可能是为高权重产品预留流量入口。
-- Anthropic 强调 Opus 4.7 “less broadly capable than Mythos Preview”，实则暗示 **Mythos 已具备远超公开模型的能力**，仅因安全考量未全面开放。
-- OpenAI 收购 Promptfoo 而非自研，显示其对**开发者体验（DX）工具链**的重视，可能预示即将推出企业级 MLOps 平台。
+> **Key judgment**: Anthropic is becoming the benchmark for an "AI safety laboratory," while OpenAI is transforming into an "AI national infrastructure provider." The two are converging technically, since both value safety, but diverging in commercialization path.
 
 ---
 
-**报告说明**：本文基于 2026-04-18 抓取的增量内容分析，所有链接均来自官方域名。OpenAI 部分内容因技术限制无法提取正文，解读基于路径语义与行业常识，后续需持续跟踪页面更新。
+## 5. Details Worth Watching
+
+- The name **"Claude Design by Anthropic Labs"** indicates that Anthropic is using Labs as an innovation incubator, similar to Google X, and may launch more vertical products independently in the future.
+- Among OpenAI's 66 same-day updates, the **"Economic Blueprint" series covers the EU, Japan, South Korea, and Australia** but not China, reflecting its geopolitical choices.
+- **GPT-Rosalind was published twice** with the same URL, possibly for A/B testing different landing pages or due to a system error, but more likely to reserve a high-weight traffic entry point for an important product.
+- Anthropic's statement that Opus 4.7 is "less broadly capable than Mythos Preview" effectively implies that **Mythos already has capabilities far beyond public models**, with full release held back for safety reasons.
+- OpenAI's acquisition of Promptfoo rather than building everything internally shows its emphasis on the **developer experience (DX) toolchain** and may foreshadow an enterprise MLOps platform.
 
 ---
-*本日报由 [Big Model Radar](https://github.com/gsscsd/big_model_radar) 自动生成。*
+
+**Report note**: This analysis is based on incremental content crawled on 2026-04-18. All links come from official domains. Some OpenAI content could not be extracted due to technical limits, so interpretations are based on path semantics and industry context and should be tracked as pages update.
+
+---
+*This daily report was automatically generated by [Big Model Radar](https://github.com/gsscsd/big_model_radar).*

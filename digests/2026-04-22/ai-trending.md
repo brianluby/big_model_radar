@@ -1,77 +1,77 @@
-# AI 开源趋势日报 2026-04-22
+# AI open source daily 2026-04-22
 
-> 数据来源: GitHub Trending + GitHub Search API | 生成时间: 2026-04-22 01:13 UTC
-
----
-
-# AI 开源趋势日报（2026-04-22）
-
-## 1. 今日速览
-
-今日 GitHub AI 生态呈现“工具链深化”与“垂直场景落地”双轮驱动态势：Claude Code 生态持续爆发，多个 MCP 插件与上下文增强工具登榜；轻量化 AI 智能体（如 nanobot、CowAgent）在个人与企业场景加速渗透；RAG 框架与向量数据库进一步融合多模态与本地部署能力；同时，WiFi 信号人体姿态估计等边缘 AI 技术展现跨领域创新潜力。
+> Data source: GitHubTrending + GitHub Search API | generation time: 2026-04-22 01:13 UTC
 
 ---
 
-## 2. 各维度热门项目
+# AI open source daily (2026-04-22)
 
-### 🔧 AI 基础工具
+## 1. Today's Summary
+
+Today GitHub AI ecosystem presents a two-wheel drive of “tool chain deepening” and “vertical scene landings”: the continuing eruption of Claude Code ecosystem, with multiple MCP plugin and context enhancements on the list; light quantification of AI angent (e.g. nanobot, CowAgent) accelerating penetration in individual and enterprise settings; further integration of multimodal and local deployment capabilities between the RAG framework and vector database; and, at the same time, the Wifi signal human attitude estimates and others, the margins AI technology demonstrates the potential for cross-cutting innovation.
+
+---
+
+## 2. Depth Hotgate Projects
+
+### 🔧AI basic tool
 - **[thunderbird/thunderbolt](https://github.com/thunderbird/thunderbolt)** ⭐0 (+596)  
-  主打“AI You Control”，强调模型自主选择与数据主权，契合去中心化 AI 趋势。
+  Play "AI You Control", emphasizing model autonomy and data sovereignty, matching the decentralised AI trend.
 - **[zilliztech/claude-context](https://github.com/zilliztech/claude-context)** ⭐0 (+169)  
-  为 Claude Code 提供全代码库上下文搜索的 MCP 插件，提升编码智能体效率。
+  Provides Claude Code Code Code Code with MCP plugin for full-code library search to enhance encodement efficiency.
 - **[microsoft/multilspy](https://github.com/microsoft/multilspy)** ⭐567  
-  基于 LSP 的 Python 库，赋能 AI 工具深度集成开发环境语言服务。
+  LSP-based Python library, enabling AI tools to develop environmental language services in depth.
 
-### 🤖 AI 智能体/工作流
+### It's the first time I've ever seen it.
 - **[microsoft/ai-agents-for-beginners](https://github.com/microsoft/ai-agents-for-beginners)** ⭐0 (+200)  
-  微软官方入门教程，12 节课系统讲解智能体构建，推动开发者生态普及。
+  Microsoft's official introductory course, 12 sessions of the school system, talks on the construction of angent, and promotes universal access by developers.
 - **[HKUDS/nanobot](https://github.com/HKUDS/nanobot)** ⭐40,412  
-  “超轻量级个人 AI 智能体”，主打低资源消耗与快速部署，适合终端用户。
+  "Al aboveweight individual ", main hit low resource consumption and fast deprovation, suitable for end users.
 - **[zhayujie/CowAgent](https://github.com/zhayujie/CowAgent)** ⭐43,596  
-  支持多平台接入（微信/飞书/钉钉等）的超级助理，集成长期记忆与技能创造。
+  Super-Assistant to support multi-platform access (WeChat/Feishu/DingTalk, etc.) to integrate long-term memory and skill creation.
 - **[trycua/cua](https://github.com/trycua/cua)** ⭐13,529  
-  为“计算机使用智能体”提供沙箱与评估基准，推动桌面级自动化发展。
+  Provides sandbox and evaluation benchmarks for "computer access" and promotes desktop automation.
 
-### 📦 AI 应用
+### AI application
 - **[ruvnet/RuView](https://github.com/ruvnet/RuView)** ⭐0 (+824)  
-  利用 WiFi 信号实现实时人体姿态估计与生命体征监测，无摄像头隐私友好方案。
+  Use of WiFi signals to achieve real-time human attitude estimates and vital signs monitoring without camera privacy friendly programs.
 - **[sansan0/TrendRadar](https://github.com/sansan0/TrendRadar)** ⭐0 (+534)  
-  AI 驱动的舆情监控工具，支持多平台聚合、智能翻译与 MCP 集成推送。
+  AI-driven surveillance tool to support multiplatform aggregation, smart translation and MCP integration delivery.
 - **[hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)** ⭐7,070  
-  从任意文档生成原生可编辑 PPTX，无需设计技能，提升办公自动化效率。
+  Generate a source-based PPTX from any document without design skills to enhance office automation efficiency.
 
-### 🧠 大模型/训练
+### 🧠large model/training
 - **[jingyaogong/minimind](https://github.com/jingyaogong/minimind)** ⭐47,924  
-  2 小时内从零训练 64M 参数 GPT，降低大模型入门门槛，推动教育与研究普及。
+  64M parameter GPT within two hours to lower the threshold of entry for broad education and research.
 - **[galilai-group/stable-pretraining](https://github.com/galilai-group/stable-pretraining)** ⭐197  
-  轻量可靠的预训练库，专注基础模型稳定训练，适合资源受限团队。
+  Light and reliable pre-training pool, focused on basic model stabilization training, suitable for resource-limited teams.
 
-### 🔍 RAG/知识库
+### RAG/Knowledge Base
 - **[HKUDS/RAG-Anything](https://github.com/HKUDS/RAG-Anything)** ⭐0 (+162)  
-  “一体化 RAG 框架”，融合检索、生成与智能体能力，简化复杂知识应用开发。
+  Integrated RAG Framework, which integrates search, generation and grant capabilities and streamlines complex knowledge application development.
 - **[yichuan-w/LEANN](https://github.com/yichuan-w/LEANN)** ⭐10,882  
-  实现 97% 存储节省的本地 RAG 方案，兼顾性能与隐私，适合个人设备部署。
+  97% of the local RAG programmes that achieve savings in storage are compatible with performance and privacy and suitable for personal equipment.
 - **[VectifyAI/PageIndex](https://github.com/VectifyAI/PageIndex)** ⭐25,597  
-  无需向量的推理型 RAG，通过文档索引直接支持逻辑推理，拓展 RAG 技术边界。
+  Reasoning RAG, which does not require a vector, directly supports the logical reasoning, extending the RAG technological boundary.
 
 ---
 
-## 3. 趋势信号分析
+## 3. Analysis of trend signals
 
-今日热榜凸显三大趋势：  
-其一，**Claude Code 生态爆发**，多个 MCP 插件（如 claude-context、claude-mem）及兼容工具（thunderbolt、iOfficeAI/AionUi）集中涌现，反映开发者正围绕 Claude 构建可编程 AI 工作流。  
-其二，**轻量化与本地化 AI 加速落地**，nanobot、LEANN、TrendRadar 等项目均强调低资源、本地部署与隐私保护，呼应边缘计算与个人 AI 助理需求上升。  
-其三，**跨模态感知技术突破**，RuView 利用 WiFi 信号实现无感人体监测，展示 AI 在物理世界感知层的新可能。整体来看，AI 开源正从“大模型中心化”向“场景化、轻量化、可控化”演进。
-
----
-
-## 4. 社区关注热点
-
-- **RuView（WiFi 人体姿态估计）**：突破传统视觉限制，开辟无摄像头感知新路径，具强隐私与普适性优势。  
-- **nanobot 与 CowAgent**：代表“个人 AI 助理”轻量化趋势，支持多端接入与长期记忆，适合快速产品化。  
-- **LEANN 的本地 RAG 方案**：97% 存储压缩比 + 100% 私有化，解决 RAG 落地成本与隐私痛点。  
-- **Claude Code MCP 生态**：claude-context、claude-mem 等插件提升编码智能体上下文能力，值得开发者集成参考。  
-- **minimind 的极简训练范式**：2 小时训练 GPT，极大降低大模型实验门槛，推动教育与研究民主化。
+Today's hot list highlights three main trends:
+First, **Claude Code explosion**, MCP plugin (e.g. claude-context, claude-mem) and compatible tools (tunderbolt, iOfficeAI/AionUi) have emerged, reflecting the fact that developers are building an AI workflow around Claude.
+Second,** Light Quantification and Localization AI Accelerated Landfall**, projects like nanobot, LEANN, TrendRadar all emphasize low resources, local deployment and privacy protection, echoing the rising needs of edge calculations and personal AI assistants.
+Third,** cross-modular sensory breakthrough**, RuView uses WiFi signals to achieve sensory human monitoring to demonstrate the new possibilities of AI at the physical world sensory level. Overall, AI open source is moving from “centralizing” to “situation, light quantification, controllable”.
 
 ---
-*本日报由 [Big Model Radar](https://github.com/gsscsd/big_model_radar) 自动生成。*
+
+## 4. Community focus on hot spots
+
+- ** RuView (WiFi Human Posture Estimates)**: Breaking traditional visual constraints and creating new, non-photo-detection pathways have strong privacy and universal advantages.
+- **nanobot and CowAgent**: Support multi-end access and long-term memory on behalf of the “Personal AI Assistant” light quantitative trend, suitable for rapid productization.
+- **LEANN local RAG programme**: 97% storage compression ratio + 100% privatization to address RAG landing costs and privacy pains.
+- ** Claude Code MCP ecology**: claude-context, claude-mem, et al., enhance encoding capabilities of angentcontext, worthy of development reference.
+- **Simplified training paradigm of **minimind**: 2 hours of training GPT, significantly lowering the threshold of the large model experiment and promoting the democratization of education and research.
+
+---
+* The present daily report is issued without formal editing.[Big Model Radar](https://github.com/gsscsd/big_model_radar)Auto-generated.*
