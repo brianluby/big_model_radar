@@ -2,13 +2,13 @@
 
 [English](./README.md) | 中文
 
-每天早上 08:00 CST 自动运行的 GitHub Actions 工作流。追踪主流 AI CLI 工具的 GitHub 动态、OpenClaw 及其同赛道项目的生态活动、Anthropic 和 OpenAI 官网最新资讯，并每日监测 GitHub AI 热门仓库趋势，以中英双语每日简报的形式发布为 GitHub Issues 并提交为 Markdown 文件。每周和每月自动生成汇总报告。
+每天早上 08:00 CST 自动运行的 GitHub Actions 工作流。追踪主流 AI CLI 工具的 GitHub 动态、OpenClaw 及其同赛道项目的生态活动、Anthropic 和 OpenAI 官网最新资讯，并每日监测 GitHub AI 热门仓库趋势，以英文每日简报的形式发布为 GitHub Issues 并提交为 Markdown 文件。每周和每月自动生成汇总报告。
 
 ## Web UI
 
 **[https://brianluby.github.io/big_model_radar](https://brianluby.github.io/big_model_radar)**
 
-在线浏览所有历史简报，深色主题，无需登录。报告直接由本仓库的 Markdown 文件通过 GitHub Pages 渲染。每份报告支持中文 / 英文切换。
+在线浏览所有历史简报，深色主题，无需登录。报告直接由本仓库的 Markdown 文件通过 GitHub Pages 渲染。本 fork 默认只生成英文报告。
 
 ## RSS 订阅
 
@@ -84,7 +84,7 @@ wrangler deploy
 
 **[t.me/agents_radar](https://t.me/agents_radar)**
 
-订阅 Telegram 频道，每日简报生成后自动推送通知，附带所有报告的直达链接（中文 / 英文）。
+订阅 Telegram 频道，每日简报生成后自动推送通知，附带所有英文报告的直达链接。
 
 ## 追踪来源
 
@@ -194,7 +194,7 @@ openclaw_peers:
 | `OPENAI_API_KEY` | ✅ | 任意 OpenAI 兼容接口的 API 密钥 |
 | `OPENAI_BASE_URL` | 可选 | API 地址覆盖。使用 OpenAI 默认接口可留空，或设置兼容服务地址，如 `https://api.openai.com/v1` |
 | `OPENAI_MODEL` | 可选 | 传给 `chat/completions` 的模型名，例如 `gpt-4.1-mini` |
-| `REPORT_LANGS` | 可选 | 报告语言，例如 `zh` 或 `zh,en`（默认：`zh`） |
+| `REPORT_LANGS` | 可选 | 报告语言。本 fork 默认只生成英文：`en` |
 | `PAGES_URL` | 建议配置 | 站点公开地址，例如 `https://your-user.github.io/big_model_radar`。建议放在仓库 Variables 中 |
 | `TELEGRAM_BOT_TOKEN` | 可选 | Telegram bot token，从 [@BotFather](https://t.me/BotFather) 获取。设置后每次 digest 完成自动推送通知 |
 | `TELEGRAM_CHAT_ID` | 可选 | 接收通知的 Telegram 频道 / 群组 / 用户 ID。启用 Telegram 推送时必须配置 |
@@ -230,7 +230,7 @@ export GITHUB_TOKEN=ghp_xxxxx
 export OPENAI_BASE_URL=https://api.openai.com/v1
 export OPENAI_API_KEY=sk-xxxxxxxx
 export OPENAI_MODEL=gpt-4.1-mini
-export REPORT_LANGS=zh
+export REPORT_LANGS=en
 export DIGEST_REPO=brianluby/big_model_radar  # 可选，留空则仅写入本地文件
 
 pnpm start
@@ -242,17 +242,17 @@ pnpm start
 
 | 文件 | 内容 | GitHub Issue 标签 |
 |------|------|------------------|
-| `ai-cli.md` | CLI 简报 — 跨工具横向对比 + 各工具详细报告 | `digest` |
-| `ai-agents.md` | OpenClaw 深度报告 + 横向生态对比 + 10 个同赛道项目详情 | `openclaw` |
-| `ai-web.md` | 官网内容报告（仅在有新内容时生成） | `web` |
-| `ai-trending.md` | GitHub AI 趋势热榜 — 按维度分类 + 趋势信号分析（仅在有数据时生成） | `trending` |
-| `ai-hn.md` | Hacker News AI 社区动态 — 热门帖子分类 + 情绪分析（仅在抓取成功时生成） | `hn` |
+| `ai-cli-en.md` | CLI 简报 — 跨工具横向对比 + 各工具详细报告 | `digest-en` |
+| `ai-agents-en.md` | OpenClaw 深度报告 + 横向生态对比 + 10 个同赛道项目详情 | `openclaw-en` |
+| `ai-web-en.md` | 官网内容报告（仅在有新内容时生成） | `web-en` |
+| `ai-trending-en.md` | GitHub AI 趋势热榜 — 按维度分类 + 趋势信号分析（仅在有数据时生成） | `trending-en` |
+| `ai-hn-en.md` | Hacker News AI 社区动态 — 热门帖子分类 + 情绪分析（仅在抓取成功时生成） | `hn-en` |
 
 `digests/web-state.json` 用于记录已处理的 URL，随每日简报一并提交。
 
 ---
 
-`ai-cli.md` 结构：
+`ai-cli-en.md` 结构：
 ```
 ## 横向对比
   生态全景 / 活跃度对比表 / 共同需求 / 差异定位 / 趋势信号
@@ -269,7 +269,7 @@ pnpm start
   <details> Qwen Code      — ...
 ```
 
-`ai-agents.md` 结构：
+`ai-agents-en.md` 结构：
 ```
 Issues: N | PRs: N | 覆盖项目: 10 个
 

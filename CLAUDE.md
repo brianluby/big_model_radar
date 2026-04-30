@@ -2,7 +2,7 @@
 
 ## Project overview
 
-agents-radar is a daily digest generator for the AI open-source ecosystem. A GitHub Actions cron job runs at 00:00 UTC (08:00 CST) and produces five Chinese-language reports, published as GitHub Issues and committed Markdown files.
+agents-radar is a daily digest generator for the AI open-source ecosystem. A GitHub Actions cron job runs at 00:00 UTC (08:00 CST) and produces English-language reports, published as GitHub Issues and committed Markdown files.
 
 ## Commands
 
@@ -52,11 +52,11 @@ Files written to `digests/YYYY-MM-DD/`:
 
 | File | Label | Notes |
 |------|-------|-------|
-| `ai-cli.md` | `digest` | Always generated |
-| `ai-agents.md` | `openclaw` | Always generated |
-| `ai-web.md` | `web` | Skipped if no new sitemap content |
-| `ai-trending.md` | `trending` | Skipped if both data sources fail |
-| `ai-hn.md` | `hn` | Skipped if Algolia fetch fails |
+| `ai-cli-en.md` | `digest-en` | Always generated |
+| `ai-agents-en.md` | `openclaw-en` | Always generated |
+| `ai-web-en.md` | `web-en` | Skipped if no new sitemap content |
+| `ai-trending-en.md` | `trending-en` | Skipped if both data sources fail |
+| `ai-hn-en.md` | `hn-en` | Skipped if Algolia fetch fails |
 
 ## Tracked sources
 
@@ -69,7 +69,7 @@ Files written to `digests/YYYY-MM-DD/`:
 
 ## Key conventions
 
-- All LLM prompts are in `src/prompts.ts`. Each report type has its own builder function. Prompts are written in Chinese and produce Chinese output.
+- All LLM prompts are in `src/prompts.ts`. Each report type has its own builder function. This fork defaults to English output with `REPORT_LANGS=en`.
 - `callLlm(prompt, maxTokens?)` defaults to 4096 tokens. Web report uses 8192, trending uses 6144. HN report uses the default 4096.
 - On 429 rate-limit errors `callLlm` retries up to 3 times with exponential backoff (5 s / 10 s / 20 s); the concurrency slot is released during the wait.
 - The concurrency limiter (`LLM_CONCURRENCY = 5`) prevents 429s when many parallel LLM calls fire. Do not bypass it by calling the Anthropic SDK directly.

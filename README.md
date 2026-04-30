@@ -2,7 +2,7 @@
 
 English | [中文](./README.zh.md)
 
-A GitHub Actions workflow that runs every morning at 08:00 CST. It tracks GitHub activity from AI CLI tools, OpenClaw and its peer projects in the AI agent ecosystem, scrapes official news and research from Anthropic and OpenAI, and monitors the GitHub AI trending repos daily — then publishes bilingual (Chinese + English) daily digests as GitHub Issues and committed Markdown files. Weekly and monthly rollup reports are also generated automatically.
+A GitHub Actions workflow that runs every morning at 08:00 CST. It tracks GitHub activity from AI CLI tools, OpenClaw and its peer projects in the AI agent ecosystem, scrapes official news and research from Anthropic and OpenAI, and monitors the GitHub AI trending repos daily — then publishes English daily digests as GitHub Issues and committed Markdown files. Weekly and monthly rollup reports are also generated automatically.
 
 ## Web UI
 
@@ -194,7 +194,7 @@ Go to **Settings → Secrets and variables → Actions** and add:
 | `OPENAI_API_KEY` | ✅ | API key for any OpenAI-compatible endpoint |
 | `OPENAI_BASE_URL` | optional | API endpoint override. Leave unset for OpenAI, or set a compatible provider URL such as `https://api.openai.com/v1` |
 | `OPENAI_MODEL` | optional | Model name passed to `chat/completions`, e.g. `gpt-4.1-mini` |
-| `REPORT_LANGS` | optional | Report languages, e.g. `zh` or `zh,en` (default: `zh`) |
+| `REPORT_LANGS` | optional | Report languages. This fork defaults to English-only: `en` |
 | `PAGES_URL` | recommended | Public site base URL, e.g. `https://your-user.github.io/big_model_radar`. Prefer a repository variable for this |
 | `TELEGRAM_BOT_TOKEN` | optional | Telegram bot token from [@BotFather](https://t.me/BotFather). If set, a message is sent after each digest run |
 | `TELEGRAM_CHAT_ID` | optional | Telegram chat/channel/group ID to send notifications to. Required if you enable Telegram notifications |
@@ -230,7 +230,7 @@ export GITHUB_TOKEN=ghp_xxxxx
 export OPENAI_BASE_URL=https://api.openai.com/v1
 export OPENAI_API_KEY=sk-xxxxxxxx
 export OPENAI_MODEL=gpt-4.1-mini
-export REPORT_LANGS=zh
+export REPORT_LANGS=en
 export DIGEST_REPO=brianluby/big_model_radar  # optional; omit to only write files
 
 pnpm start
@@ -242,19 +242,19 @@ Files are written to `digests/YYYY-MM-DD/`:
 
 | File | Content | GitHub Issue label |
 |------|---------|-------------------|
-| `ai-cli.md` | CLI digest — cross-tool comparison + per-tool details | `digest` |
-| `ai-agents.md` | OpenClaw deep report + cross-ecosystem comparison + 10 peer details | `openclaw` |
-| `ai-web.md` | Official web content report (only written when new content exists) | `web` |
-| `ai-trending.md` | GitHub AI trending report — repos classified by dimension + trend signals (only written when data is available) | `trending` |
-| `ai-hn.md` | Hacker News AI community digest — top stories + sentiment analysis (only written when fetch succeeds) | `hn` |
+| `ai-cli-en.md` | CLI digest — cross-tool comparison + per-tool details | `digest-en` |
+| `ai-agents-en.md` | OpenClaw deep report + cross-ecosystem comparison + 10 peer details | `openclaw-en` |
+| `ai-web-en.md` | Official web content report (only written when new content exists) | `web-en` |
+| `ai-trending-en.md` | GitHub AI trending report — repos classified by dimension + trend signals (only written when data is available) | `trending-en` |
+| `ai-hn-en.md` | Hacker News AI community digest — top stories + sentiment analysis (only written when fetch succeeds) | `hn-en` |
 
 A shared state file `digests/web-state.json` tracks which web URLs have been seen; it is committed alongside the daily digests.
 
-Each report is generated in both Chinese (`ai-cli.md`) and English (`ai-cli-en.md`). The Web UI sidebar shows ZH / EN toggle buttons for reports that have both variants.
+This fork is configured for English-only output. Set `REPORT_LANGS=zh,en` only if you intentionally want bilingual reports.
 
 ---
 
-`ai-cli.md` / `ai-cli-en.md` structure:
+`ai-cli-en.md` structure:
 ```
 ## Cross-Tool Comparison
   Ecosystem overview / Activity comparison table / Shared themes / Differentiation / Trend signals
@@ -272,7 +272,7 @@ Each report is generated in both Chinese (`ai-cli.md`) and English (`ai-cli-en.m
   <details> Qwen Code      — ...
 ```
 
-`ai-agents.md` / `ai-agents-en.md` structure:
+`ai-agents-en.md` structure:
 ```
 Issues: N | PRs: N | Projects covered: 10
 

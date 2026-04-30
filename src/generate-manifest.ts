@@ -22,6 +22,8 @@ const REPORT_FILES = [
   "ai-monthly-en",
 ] as const;
 const MAX_FEED_ITEMS = 30;
+type ReportFile = (typeof REPORT_FILES)[number];
+type ReportLang = "zh" | "en";
 
 const REPORT_LABELS: Record<string, string> = {
   "ai-cli": "AI CLI 工具社区动态日报",
@@ -39,6 +41,23 @@ const REPORT_LABELS: Record<string, string> = {
   "ai-monthly": "AI 工具生态月报",
   "ai-monthly-en": "AI Tools Monthly Digest",
 };
+
+function enabledLangs(): ReportLang[] {
+  const langs = (process.env["REPORT_LANGS"] ?? "en")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s): s is ReportLang => s === "zh" || s === "en");
+  return langs.length > 0 ? langs : ["en"];
+}
+
+function reportLang(report: ReportFile): ReportLang {
+  return report.endsWith("-en") ? "en" : "zh";
+}
+
+function feedLanguage(langs: ReportLang[]): string {
+  if (langs.length === 1) return langs[0] === "en" ? "en-US" : "zh-CN";
+  return "en-US";
+}
 
 interface DateEntry {
   date: string;
@@ -79,6 +98,9 @@ function escapeXml(s: string): string {
 }
 
 const SITE_URL = resolveSiteUrl();
+const ENABLED_LANGS = enabledLangs();
+const ENABLED_LANG_SET = new Set<ReportLang>(ENABLED_LANGS);
+const ACTIVE_REPORT_FILES = REPORT_FILES.filter((report) => ENABLED_LANG_SET.has(reportLang(report)));
 
 const entries = fs
   .readdirSync(DIGESTS_DIR)
@@ -86,7 +108,7 @@ const entries = fs
   .sort()
   .reverse()
   .map((date) => {
-    const reports = REPORT_FILES.filter((r) => fs.existsSync(path.join(DIGESTS_DIR, date, `${r}.md`)));
+    const reports = ACTIVE_REPORT_FILES.filter((r) => fs.existsSync(path.join(DIGESTS_DIR, date, `${r}.md`)));
     return { date, reports };
   })
   .filter((e) => e.reports.length > 0);
@@ -136,8 +158,8 @@ const feedXml =
   `  <channel>\n` +
   `    <title>Big Model Radar</title>\n` +
   `    <link>${SITE_URL}</link>\n` +
-  `    <description>AI 开源生态每日简报 · Daily AI ecosystem digest</description>\n` +
-  `    <language>zh-CN</language>\n` +
+  `    <description>Daily AI ecosystem digest</description>\n` +
+  `    <language>${feedLanguage(ENABLED_LANGS)}</language>\n` +
   `    <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>\n` +
   `    <lastBuildDate>${buildDate}</lastBuildDate>\n` +
   itemsXml +

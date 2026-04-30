@@ -200,6 +200,8 @@ export async function createGitHubIssue(title: string, body: string, label: stri
     "web-en": "6366f1",
     "trending-en": "fbbf24",
     "hn-en": "fb923c",
+    "weekly-en": "7c3aed",
+    "monthly-en": "0d9488",
   };
   await ensureLabel(label, LABEL_COLORS[label] ?? "0075ca");
   const resp = await fetch(`https://api.github.com/repos/${digestRepo}/issues`, {

@@ -11,9 +11,11 @@ import { createGitHubIssue } from "./github.ts";
 
 const DIGESTS_DIR = "digests";
 const MAX_CHARS_PER_REPORT = 2500;
+type ReportLang = "zh" | "en";
 
 // Source report types to read for rollups (in priority order)
 const ROLLUP_SOURCES = ["ai-cli", "ai-agents", "ai-trending", "ai-hn", "ai-web"];
+const LANG_SUFFIX: Record<ReportLang, string> = { zh: "", en: "-en" };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -29,24 +31,26 @@ function getDateDirs(): string[] {
 }
 
 /** Read and truncate a daily digest file. Returns null if not found. */
-function readDailyDigest(date: string): string | null {
+function readDailyDigest(date: string, lang: ReportLang): string | null {
   for (const type of ROLLUP_SOURCES) {
-    const p = path.join(DIGESTS_DIR, date, `${type}.md`);
+    const p = path.join(DIGESTS_DIR, date, `${type}${LANG_SUFFIX[lang]}.md`);
     if (fs.existsSync(p)) {
       const content = fs.readFileSync(p, "utf-8");
       const truncated = content.slice(0, MAX_CHARS_PER_REPORT);
-      return truncated.length < content.length ? truncated + "\n...[摘要截断]" : truncated;
+      const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
+      return truncated.length < content.length ? truncated + marker : truncated;
     }
   }
   return null;
 }
 
 /** Read a weekly report file. Returns null if not found. */
-function readWeeklyDigest(date: string): string | null {
-  const p = path.join(DIGESTS_DIR, date, "ai-weekly.md");
+function readWeeklyDigest(date: string, lang: ReportLang): string | null {
+  const p = path.join(DIGESTS_DIR, date, `ai-weekly${LANG_SUFFIX[lang]}.md`);
   if (!fs.existsSync(p)) return null;
   const content = fs.readFileSync(p, "utf-8");
-  return content.slice(0, 3000) + (content.length > 3000 ? "\n...[截断]" : "");
+  const marker = lang === "en" ? "\n...[truncated]" : "\n...[截断]";
+  return content.slice(0, 3000) + (content.length > 3000 ? marker : "");
 }
 
 /** Format a date as ISO week string, e.g. "2026-W10". */
@@ -71,11 +75,11 @@ export async function runWeeklyRollup(): Promise<void> {
   const utcStr = now.toISOString().slice(0, 16).replace("T", " ");
   const weekStr = toWeekStr(cstDate);
   const digestRepo = process.env["DIGEST_REPO"] ?? "";
-  const langs = (process.env["REPORT_LANGS"] ?? "zh")
+  const langs = (process.env["REPORT_LANGS"] ?? "en")
     .split(",")
     .map((s) => s.trim().toLowerCase())
-    .filter((s) => s === "zh" || s === "en");
-  const enabledLangs = langs.length > 0 ? langs : ["zh"];
+    .filter((s): s is ReportLang => s === "zh" || s === "en");
+  const enabledLangs = langs.length > 0 ? langs : ["en"];
   const genZh = enabledLangs.includes("zh");
   const genEn = enabledLangs.includes("en");
 
@@ -86,50 +90,66 @@ export async function runWeeklyRollup(): Promise<void> {
   const allDates = getDateDirs();
   const last7 = allDates.slice(0, 7);
 
-  const dailyDigests: Record<string, string> = {};
-  for (const date of last7) {
-    const content = readDailyDigest(date);
-    if (content) dailyDigests[date] = content;
+  const dailyDigestsByLang: Record<ReportLang, Record<string, string>> = { zh: {}, en: {} };
+  for (const lang of enabledLangs) {
+    for (const date of last7) {
+      const content = readDailyDigest(date, lang);
+      if (content) dailyDigestsByLang[lang][date] = content;
+    }
   }
 
-  if (Object.keys(dailyDigests).length === 0) {
+  if (enabledLangs.every((lang) => Object.keys(dailyDigestsByLang[lang]).length === 0)) {
     console.log("[weekly] No daily digests found, skipping.");
     return;
   }
 
   console.log(
-    `[weekly] Found ${Object.keys(dailyDigests).length} daily digests: ${Object.keys(dailyDigests).join(", ")}`,
+    `[weekly] Found daily digests: ${enabledLangs.map((lang) => `${lang}=${Object.keys(dailyDigestsByLang[lang]).length}`).join(", ")}`,
   );
 
   const footer = autoGenFooter("zh");
   const enFooter = autoGenFooter("en");
 
   if (genZh) {
-    console.log("[weekly] Calling LLM for ZH weekly report...");
-    const zhSummary = await callLlm(buildWeeklyPrompt(dailyDigests, weekStr, "zh"), 8192);
-    const zhContent =
-      `# AI 工具生态周报 ${weekStr}\n\n` +
-      `> 覆盖日期: ${last7[last7.length - 1]} ~ ${last7[0]} | 生成时间: ${utcStr} UTC\n\n` +
-      `---\n\n` +
-      zhSummary +
-      footer;
-    console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-weekly.md")}`);
-    if (digestRepo) {
-      const url = await createGitHubIssue(`📅 AI 工具生态周报 ${weekStr}`, zhContent, "weekly");
-      console.log(`  Created weekly issue: ${url}`);
+    const dailyDigests = dailyDigestsByLang.zh;
+    if (Object.keys(dailyDigests).length === 0) {
+      console.log("[weekly] No ZH daily digests found, skipping ZH report.");
+    } else {
+      console.log("[weekly] Calling LLM for ZH weekly report...");
+      const zhSummary = await callLlm(buildWeeklyPrompt(dailyDigests, weekStr, "zh"), 8192);
+      const zhContent =
+        `# AI 工具生态周报 ${weekStr}\n\n` +
+        `> 覆盖日期: ${last7[last7.length - 1]} ~ ${last7[0]} | 生成时间: ${utcStr} UTC\n\n` +
+        `---\n\n` +
+        zhSummary +
+        footer;
+      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-weekly.md")}`);
+      if (digestRepo) {
+        const url = await createGitHubIssue(`📅 AI 工具生态周报 ${weekStr}`, zhContent, "weekly");
+        console.log(`  Created weekly issue: ${url}`);
+      }
     }
   }
 
   if (genEn) {
-    console.log("[weekly] Calling LLM for EN weekly report...");
-    const enSummary = await callLlm(buildWeeklyPrompt(dailyDigests, weekStr, "en"), 8192);
-    const enContent =
-      `# AI Tools Ecosystem Weekly Report ${weekStr}\n\n` +
-      `> Coverage: ${last7[last7.length - 1]} ~ ${last7[0]} | Generated: ${utcStr} UTC\n\n` +
-      `---\n\n` +
-      enSummary +
-      enFooter;
-    console.log(`  Saved ${saveFile(enContent, dateStr, "ai-weekly-en.md")}`);
+    const dailyDigests = dailyDigestsByLang.en;
+    if (Object.keys(dailyDigests).length === 0) {
+      console.log("[weekly] No EN daily digests found, skipping EN report.");
+    } else {
+      console.log("[weekly] Calling LLM for EN weekly report...");
+      const enSummary = await callLlm(buildWeeklyPrompt(dailyDigests, weekStr, "en"), 8192);
+      const enContent =
+        `# AI Tools Ecosystem Weekly Report ${weekStr}\n\n` +
+        `> Coverage: ${last7[last7.length - 1]} ~ ${last7[0]} | Generated: ${utcStr} UTC\n\n` +
+        `---\n\n` +
+        enSummary +
+        enFooter;
+      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-weekly-en.md")}`);
+      if (digestRepo) {
+        const url = await createGitHubIssue(`📅 AI Tools Ecosystem Weekly Report ${weekStr}`, enContent, "weekly-en");
+        console.log(`  Created weekly issue (en): ${url}`);
+      }
+    }
   }
 
   console.log("[weekly] Done!");
@@ -148,11 +168,11 @@ export async function runMonthlyRollup(): Promise<void> {
   const dateStr = cstDate.toISOString().slice(0, 10);
   const utcStr = now.toISOString().slice(0, 16).replace("T", " ");
   const digestRepo = process.env["DIGEST_REPO"] ?? "";
-  const langs = (process.env["REPORT_LANGS"] ?? "zh")
+  const langs = (process.env["REPORT_LANGS"] ?? "en")
     .split(",")
     .map((s) => s.trim().toLowerCase())
-    .filter((s) => s === "zh" || s === "en");
-  const enabledLangs = langs.length > 0 ? langs : ["zh"];
+    .filter((s): s is ReportLang => s === "zh" || s === "en");
+  const enabledLangs = langs.length > 0 ? langs : ["en"];
   const genZh = enabledLangs.includes("zh");
   const genEn = enabledLangs.includes("en");
 
@@ -163,72 +183,85 @@ export async function runMonthlyRollup(): Promise<void> {
 
   // Prefer weekly reports from the target month
   const monthDates = allDates.filter((d) => d.startsWith(monthStr));
-  const weeklyDates = monthDates.filter((d) => fs.existsSync(path.join(DIGESTS_DIR, d, "ai-weekly.md")));
+  const hasWeeklyForLang = (date: string, lang: ReportLang) =>
+    fs.existsSync(path.join(DIGESTS_DIR, date, `ai-weekly${LANG_SUFFIX[lang]}.md`));
 
-  let sourceDigests: Record<string, string>;
-  let sourceLabel: { zh: string; en: string };
+  const sourceByLang: Record<ReportLang, { digests: Record<string, string>; label: string }> = {
+    zh: { digests: {}, label: "" },
+    en: { digests: {}, label: "" },
+  };
 
-  if (weeklyDates.length >= 2) {
-    // Use weekly reports
-    sourceLabel = {
-      zh: `${weeklyDates.length} 份周报`,
-      en: `${weeklyDates.length} weekly reports`,
-    };
-    sourceDigests = {};
-    for (const date of weeklyDates) {
-      const content = readWeeklyDigest(date);
-      if (content) sourceDigests[date] = content;
-    }
-  } else {
-    // Sample daily reports: every 4th day, max 10
-    const sampled = monthDates.filter((_, i) => i % 4 === 0).slice(0, 10);
-    sourceLabel = {
-      zh: `${sampled.length} 份日报（每4日采样）`,
-      en: `${sampled.length} daily reports (sampled every 4 days)`,
-    };
-    sourceDigests = {};
-    for (const date of sampled) {
-      const content = readDailyDigest(date);
-      if (content) sourceDigests[date] = content;
+  for (const lang of enabledLangs) {
+    const weeklyDates = monthDates.filter((date) => hasWeeklyForLang(date, lang));
+    if (weeklyDates.length >= 2) {
+      sourceByLang[lang].label = lang === "en" ? `${weeklyDates.length} weekly reports` : `${weeklyDates.length} 份周报`;
+      for (const date of weeklyDates) {
+        const content = readWeeklyDigest(date, lang);
+        if (content) sourceByLang[lang].digests[date] = content;
+      }
+    } else {
+      const sampled = monthDates.filter((_, i) => i % 4 === 0).slice(0, 10);
+      sourceByLang[lang].label =
+        lang === "en" ? `${sampled.length} daily reports (sampled every 4 days)` : `${sampled.length} 份日报（每4日采样）`;
+      for (const date of sampled) {
+        const content = readDailyDigest(date, lang);
+        if (content) sourceByLang[lang].digests[date] = content;
+      }
     }
   }
 
-  if (Object.keys(sourceDigests).length === 0) {
+  if (enabledLangs.every((lang) => Object.keys(sourceByLang[lang].digests).length === 0)) {
     console.log(`[monthly] No source digests found for ${monthStr}, skipping.`);
     return;
   }
 
-  console.log(`[monthly] Source: ${sourceLabel.zh}`);
+  console.log(
+    `[monthly] Sources: ${enabledLangs.map((lang) => `${lang}=${Object.keys(sourceByLang[lang].digests).length}`).join(", ")}`,
+  );
 
   const footer = autoGenFooter("zh");
   const enFooter = autoGenFooter("en");
 
   if (genZh) {
-    console.log("[monthly] Calling LLM for ZH monthly report...");
-    const zhSummary = await callLlm(buildMonthlyPrompt(sourceDigests, monthStr, "zh"), 8192);
-    const zhContent =
-      `# AI 工具生态月报 ${monthStr}\n\n` +
-      `> 数据来源: ${sourceLabel.zh} | 生成时间: ${utcStr} UTC\n\n` +
-      `---\n\n` +
-      zhSummary +
-      footer;
-    console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-monthly.md")}`);
-    if (digestRepo) {
-      const url = await createGitHubIssue(`📆 AI 工具生态月报 ${monthStr}`, zhContent, "monthly");
-      console.log(`  Created monthly issue: ${url}`);
+    const { digests: sourceDigests, label } = sourceByLang.zh;
+    if (Object.keys(sourceDigests).length === 0) {
+      console.log("[monthly] No ZH source digests found, skipping ZH report.");
+    } else {
+      console.log("[monthly] Calling LLM for ZH monthly report...");
+      const zhSummary = await callLlm(buildMonthlyPrompt(sourceDigests, monthStr, "zh"), 8192);
+      const zhContent =
+        `# AI 工具生态月报 ${monthStr}\n\n` +
+        `> 数据来源: ${label} | 生成时间: ${utcStr} UTC\n\n` +
+        `---\n\n` +
+        zhSummary +
+        footer;
+      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-monthly.md")}`);
+      if (digestRepo) {
+        const url = await createGitHubIssue(`📆 AI 工具生态月报 ${monthStr}`, zhContent, "monthly");
+        console.log(`  Created monthly issue: ${url}`);
+      }
     }
   }
 
   if (genEn) {
-    console.log("[monthly] Calling LLM for EN monthly report...");
-    const enSummary = await callLlm(buildMonthlyPrompt(sourceDigests, monthStr, "en"), 8192);
-    const enContent =
-      `# AI Tools Ecosystem Monthly Report ${monthStr}\n\n` +
-      `> Sources: ${sourceLabel.en} | Generated: ${utcStr} UTC\n\n` +
-      `---\n\n` +
-      enSummary +
-      enFooter;
-    console.log(`  Saved ${saveFile(enContent, dateStr, "ai-monthly-en.md")}`);
+    const { digests: sourceDigests, label } = sourceByLang.en;
+    if (Object.keys(sourceDigests).length === 0) {
+      console.log("[monthly] No EN source digests found, skipping EN report.");
+    } else {
+      console.log("[monthly] Calling LLM for EN monthly report...");
+      const enSummary = await callLlm(buildMonthlyPrompt(sourceDigests, monthStr, "en"), 8192);
+      const enContent =
+        `# AI Tools Ecosystem Monthly Report ${monthStr}\n\n` +
+        `> Sources: ${label} | Generated: ${utcStr} UTC\n\n` +
+        `---\n\n` +
+        enSummary +
+        enFooter;
+      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-monthly-en.md")}`);
+      if (digestRepo) {
+        const url = await createGitHubIssue(`📆 AI Tools Ecosystem Monthly Report ${monthStr}`, enContent, "monthly-en");
+        console.log(`  Created monthly issue (en): ${url}`);
+      }
+    }
   }
 
   console.log("[monthly] Done!");

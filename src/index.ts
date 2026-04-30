@@ -38,6 +38,8 @@ import { fetchTrendingData, type TrendingData } from "./trending.ts";
 import { fetchHnData, type HnData } from "./hn.ts";
 import { loadConfig } from "./config.ts";
 
+type ReportLang = "zh" | "en";
+
 // ---------------------------------------------------------------------------
 // Repo config — loaded from config.yml, falls back to built-in defaults
 // ---------------------------------------------------------------------------
@@ -549,11 +551,11 @@ async function main(): Promise<void> {
 
   console.log(`[${now.toISOString()}] Starting digest | endpoint: ${getLlmBaseUrl()}`);
 
-  const langs = (process.env["REPORT_LANGS"] ?? "zh")
+  const langs = (process.env["REPORT_LANGS"] ?? "en")
     .split(",")
     .map((s) => s.trim().toLowerCase())
-    .filter((s) => s === "zh" || s === "en");
-  const enabledLangs = langs.length > 0 ? langs : ["zh"];
+    .filter((s): s is ReportLang => s === "zh" || s === "en");
+  const enabledLangs = langs.length > 0 ? langs : ["en"];
   const genZh = enabledLangs.includes("zh");
   const genEn = enabledLangs.includes("en");
   console.log(`  Languages: ${enabledLangs.join(", ")}`);

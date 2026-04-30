@@ -68,12 +68,12 @@ async function sendTelegram(text: string): Promise<void> {
 }
 
 function buildMessage(date: string, reports: string[]): string {
-  const baseReports = reports.filter((r) => !r.endsWith("-en"));
+  const baseReports = [...new Set(reports.map((r) => (r.endsWith("-en") ? r.slice(0, -3) : r)))];
   const isWeekly = baseReports.includes("ai-weekly");
   const isMonthly = baseReports.includes("ai-monthly");
 
   const icon = isMonthly ? "📆" : isWeekly ? "📅" : "📡";
-  const suffix = isMonthly ? " 月报" : isWeekly ? " 周报" : "";
+  const suffix = isMonthly ? " Monthly" : isWeekly ? " Weekly" : "";
   const lines: string[] = [`${icon} <b>Big Model Radar${suffix} · ${date}</b>\n`];
 
   // Daily reports first, then rollups
@@ -83,14 +83,20 @@ function buildMessage(date: string, reports: string[]): string {
   ];
 
   for (const r of ordered) {
+    const hasZh = reports.includes(r);
+    const enKey = `${r}-en`;
+    const hasEn = reports.includes(enKey);
     const zhLabel = ZH_LABELS[r] ?? r;
     const zhUrl = `${PAGES_URL}/#${date}/${r}`;
-    const enKey = `${r}-en`;
-    if (reports.includes(enKey)) {
+    if (hasZh && hasEn) {
       const enLabel = EN_LABELS[r] ?? "EN";
       const enUrl = `${PAGES_URL}/#${date}/${enKey}`;
       lines.push(`• <a href="${zhUrl}">${zhLabel}</a>  ·  <a href="${enUrl}">${enLabel}</a>`);
-    } else {
+    } else if (hasEn) {
+      const enLabel = EN_LABELS[r] ?? enKey;
+      const enUrl = `${PAGES_URL}/#${date}/${enKey}`;
+      lines.push(`• <a href="${enUrl}">${enLabel}</a>`);
+    } else if (hasZh) {
       lines.push(`• <a href="${zhUrl}">${zhLabel}</a>`);
     }
   }
