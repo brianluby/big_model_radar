@@ -6,13 +6,13 @@ A GitHub Actions workflow that runs every morning at 08:00 CST. It tracks GitHub
 
 ## Web UI
 
-**[https://gsscsd.github.io/big_model_radar](https://gsscsd.github.io/big_model_radar)**
+**[https://brianluby.github.io/big_model_radar](https://brianluby.github.io/big_model_radar)**
 
 Browse all historical digests in a clean, dark-themed interface — no login required. Reports are rendered from the Markdown files in this repo via GitHub Pages.
 
 ## RSS Feed
 
-**[https://gsscsd.github.io/big_model_radar/feed.xml](https://gsscsd.github.io/big_model_radar/feed.xml)**
+**[https://brianluby.github.io/big_model_radar/feed.xml](https://brianluby.github.io/big_model_radar/feed.xml)**
 
 Subscribe in any RSS reader (Feedly, Reeder, NewsBlur, etc.) to receive new digests automatically. The feed includes the latest 30 reports across all report types, updated daily alongside `manifest.json`.
 
@@ -231,7 +231,7 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 export OPENAI_API_KEY=sk-xxxxxxxx
 export OPENAI_MODEL=gpt-4.1-mini
 export REPORT_LANGS=zh
-export DIGEST_REPO=your-username/big_model_radar  # optional; omit to only write files
+export DIGEST_REPO=brianluby/big_model_radar  # optional; omit to only write files
 
 pnpm start
 ```
@@ -374,4 +374,4 @@ To change the schedule, edit the cron expressions in the corresponding workflow 
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=gsscsd/big_model_radar&type=Date)](https://star-history.com/#gsscsd/big_model_radar&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=brianluby/big_model_radar&type=Date)](https://star-history.com/#brianluby/big_model_radar&Date)

@@ -11,7 +11,7 @@
  *   search        — keyword search across recent reports
  */
 
-const PAGES_URL = "https://gsscsd.github.io/big_model_radar";
+const PAGES_URL = "https://brianluby.github.io/big_model_radar";
 
 const REPORT_LABELS: Record<string, string> = {
   "ai-cli": "AI CLI Tools Digest (ZH)",

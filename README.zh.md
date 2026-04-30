@@ -6,13 +6,13 @@
 
 ## Web UI
 
-**[https://gsscsd.github.io/big_model_radar](https://gsscsd.github.io/big_model_radar)**
+**[https://brianluby.github.io/big_model_radar](https://brianluby.github.io/big_model_radar)**
 
 在线浏览所有历史简报，深色主题，无需登录。报告直接由本仓库的 Markdown 文件通过 GitHub Pages 渲染。每份报告支持中文 / 英文切换。
 
 ## RSS 订阅
 
-**[https://gsscsd.github.io/big_model_radar/feed.xml](https://gsscsd.github.io/big_model_radar/feed.xml)**
+**[https://brianluby.github.io/big_model_radar/feed.xml](https://brianluby.github.io/big_model_radar/feed.xml)**
 
 在任意 RSS 阅读器（Feedly、Reeder、NewsBlur 等）中订阅，每日自动推送新简报。Feed 包含最新 30 条报告（覆盖所有报告类型），与 `manifest.json` 同步更新。
 
@@ -231,7 +231,7 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 export OPENAI_API_KEY=sk-xxxxxxxx
 export OPENAI_MODEL=gpt-4.1-mini
 export REPORT_LANGS=zh
-export DIGEST_REPO=your-username/big_model_radar  # 可选，留空则仅写入本地文件
+export DIGEST_REPO=brianluby/big_model_radar  # 可选，留空则仅写入本地文件
 
 pnpm start
 ```
@@ -351,4 +351,4 @@ OpenAI 内容精选            (research / release / company / safety / ...)
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=gsscsd/big_model_radar&type=Date)](https://star-history.com/#gsscsd/big_model_radar&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=brianluby/big_model_radar&type=Date)](https://star-history.com/#brianluby/big_model_radar&Date)
