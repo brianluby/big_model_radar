@@ -2,13 +2,13 @@
 
 [English](./README.md) | 中文
 
-每天早上 08:00 CST 自动运行的 GitHub Actions 工作流。追踪主流 AI CLI 工具的 GitHub 动态、OpenClaw 及其同赛道项目的生态活动、Anthropic 和 OpenAI 官网最新资讯，并每日监测 GitHub AI 热门仓库趋势，以英文每日简报的形式发布为 GitHub Issues 并提交为 Markdown 文件。每周和每月自动生成汇总报告。
+每天早上 08:00 CST 自动运行的 GitHub Actions 工作流。追踪主流 AI CLI 工具的 GitHub 动态、第一方 AI 智能体与精简后的同赛道项目生态活动、Anthropic 和 OpenAI 官网最新资讯，并每日监测 GitHub AI 热门仓库趋势，以英文每日简报的形式发布为 GitHub Issues 并提交为 Markdown 文件。每周和每月自动生成汇总报告。
 
 ## Web UI
 
 **[https://brianluby.github.io/big_model_radar](https://brianluby.github.io/big_model_radar)**
 
-在线浏览所有历史简报，深色主题，无需登录。报告直接由本仓库的 Markdown 文件通过 GitHub Pages 渲染。本 fork 默认只生成英文报告。
+在线浏览所有历史简报，深色主题，无需登录。报告直接由本仓库的 Markdown 文件通过 GitHub Pages 渲染。本 fork 默认只生成英文报告；只有在显式设置 `REPORT_LANGS=zh,en` 时才会额外生成中文版本。
 
 ## RSS 订阅
 
@@ -110,23 +110,26 @@ wrangler deploy
 
 PR 和 Issue 不设时间过滤，按社区热度（评论数）排序，报告始终反映当前最活跃的 Skills 讨论，而非仅看最新内容。
 
-### OpenClaw + AI Agent 生态（GitHub）
+### 第一方 AI 智能体（GitHub）
 
-OpenClaw 作为重点追踪项目，同时横向对比 10 个同赛道项目，覆盖个人 AI 助手 / 自主 Agent 方向。
+当前有 4 个第一方重点项目，会在每日智能体生态报告中获得独立深度分析。
 
 | 项目 | 仓库 | Stars |
 |------|------|-------|
-| OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | 240.5k |
-| NanoBot | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | 26.9k |
-| Zeroclaw | [zeroclaw-labs/zeroclaw](https://github.com/zeroclaw-labs/zeroclaw) | 21.2k |
-| PicoClaw | [sipeed/picoclaw](https://github.com/sipeed/picoclaw) | 21.1k |
-| NanoClaw | [qwibitai/nanoclaw](https://github.com/qwibitai/nanoclaw) | 16.6k |
-| IronClaw | [nearai/ironclaw](https://github.com/nearai/ironclaw) | 3.9k |
-| LobsterAI | [netease-youdao/LobsterAI](https://github.com/netease-youdao/LobsterAI) | 3.0k |
-| TinyClaw | [TinyAGI/tinyclaw](https://github.com/TinyAGI/tinyclaw) | 2.8k |
-| CoPaw | [agentscope-ai/CoPaw](https://github.com/agentscope-ai/CoPaw) | 2.2k |
-| ZeptoClaw | [qhkm/zeptoclaw](https://github.com/qhkm/zeptoclaw) | 394 |
-| EasyClaw | [gaoyangz77/easyclaw](https://github.com/gaoyangz77/easyclaw) | 102 |
+| OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | 366.7k |
+| Hermes Agent | [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) | 126.4k |
+| Zeroclaw | [zeroclaw-labs/zeroclaw](https://github.com/zeroclaw-labs/zeroclaw) | 30.8k |
+| Moltis | [moltis-org/moltis](https://github.com/moltis-org/moltis) | 2.6k |
+
+### 同赛道项目（GitHub）
+
+为横向生态对比保留了更精简的同赛道项目集合，重点关注仍然提供差异化产品思路或技术路线的项目。
+
+| 项目 | 仓库 | 保留原因 |
+|------|------|----------|
+| PicoClaw | [sipeed/picoclaw](https://github.com/sipeed/picoclaw) | 面向受限/边缘部署的超轻量 Go 智能体 |
+| NanoClaw | [qwibitai/nanoclaw](https://github.com/qwibitai/nanoclaw) | 强调容器隔离安全与多消息通道接入 |
+| CoPaw | [agentscope-ai/CoPaw](https://github.com/agentscope-ai/CoPaw) | AgentScope / Qwen 生态下的多聊天应用部署路线 |
 
 ### GitHub AI 趋势热榜
 
@@ -157,7 +160,7 @@ LLM 负责过滤非 AI 项目，将结果按维度分类（AI 基础工具 / AI 
 - 抓取所有追踪仓库过去 24 小时内更新的 Issues、PR 和 Releases
 - 追踪热门 Claude Code Skills，按社区参与度而非时间排序
 - 为每个 CLI 仓库生成单独摘要，并输出跨工具横向对比分析
-- 生成 OpenClaw 深度项目报告，并与 10 个同赛道项目进行横向对比
+- 生成第一方智能体深度报告，并与精简后的同赛道项目集合进行横向对比
 - 通过 Sitemap 抓取 Anthropic 和 OpenAI 官网内容，增量检测新文章
 - 每日监测 GitHub Trending + 搜索 6 个 AI 主题标签，按维度分类并提炼趋势信号
 - 抓取 Hacker News 过去 24 小时 AI 热门帖子（top 30，按分数排序），生成社区情绪报告
@@ -181,7 +184,7 @@ cli_repos:
     name: My AI Tool
 
 # 添加新的同赛道对比项目
-openclaw_peers:
+peer_agents:
   - id: my-agent
     repo: owner/my-agent
     name: My Agent
@@ -196,7 +199,7 @@ openclaw_peers:
 | `OPENAI_API_KEY` | ✅ | 任意 OpenAI 兼容接口的 API 密钥 |
 | `OPENAI_BASE_URL` | 可选 | API 地址覆盖。使用 OpenAI 默认接口可留空，或设置兼容服务地址，如 `https://api.openai.com/v1` |
 | `OPENAI_MODEL` | 可选 | 传给 `chat/completions` 的模型名，例如 `gpt-4.1-mini` |
-| `REPORT_LANGS` | 可选 | 报告语言。本 fork 默认只生成英文：`en` |
+| `REPORT_LANGS` | 可选 | 报告语言。本 fork 默认只生成英文：`en`；如需中英双语，设置为 `zh,en` |
 | `PAGES_URL` | 建议配置 | 站点公开地址，例如 `https://your-user.github.io/big_model_radar`。建议放在仓库 Variables 中 |
 | `TELEGRAM_BOT_TOKEN` | 可选 | Telegram bot token，从 [@BotFather](https://t.me/BotFather) 获取。设置后每次 digest 完成自动推送通知 |
 | `TELEGRAM_CHAT_ID` | 可选 | 接收通知的 Telegram 频道 / 群组 / 用户 ID。启用 Telegram 推送时必须配置 |
@@ -244,17 +247,18 @@ pnpm start
 
 | 文件 | 内容 | GitHub Issue 标签 |
 |------|------|------------------|
-| `ai-cli-en.md` | CLI 简报 — 跨工具横向对比 + 各工具详细报告 | `digest-en` |
-| `ai-agents-en.md` | OpenClaw 深度报告 + 横向生态对比 + 10 个同赛道项目详情 | `openclaw-en` |
-| `ai-web-en.md` | 官网内容报告（仅在有新内容时生成） | `web-en` |
-| `ai-trending-en.md` | GitHub AI 趋势热榜 — 按维度分类 + 趋势信号分析（仅在有数据时生成） | `trending-en` |
-| `ai-hn-en.md` | Hacker News AI 社区动态 — 热门帖子分类 + 情绪分析（仅在抓取成功时生成） | `hn-en` |
+| `ai-cli.md` | CLI 简报 — 跨工具横向对比 + 各工具详细报告 | `digest-en` |
+| `ai-agents.md` | 第一方智能体深度报告 + 横向生态对比 + 同赛道项目详情 | `openclaw-en`（为保持历史 Issue 连续性而保留的旧标签名） |
+| `ai-web.md` | 官网内容报告（仅在有新内容时生成） | `web-en` |
+| `ai-trending.md` | GitHub AI 趋势热榜 — 按维度分类 + 趋势信号分析（仅在有数据时生成） | `trending-en` |
+| `ai-hn.md` | Hacker News AI 社区动态 — 热门帖子分类 + 情绪分析（仅在抓取成功时生成） | `hn-en` |
+| `ai-research.md` | 内部研究优先级简报，包含 1–5 分实现价值排序 | `research-en` |
 
 `digests/web-state.json` 用于记录已处理的 URL，随每日简报一并提交。
 
 ---
 
-`ai-cli-en.md` 结构：
+`ai-cli.md` 结构：
 ```
 ## 横向对比
   生态全景 / 活跃度对比表 / 共同需求 / 差异定位 / 趋势信号
@@ -271,28 +275,21 @@ pnpm start
   <details> Qwen Code      — ...
 ```
 
-`ai-agents-en.md` 结构：
+`ai-agents.md` 结构：
 ```
-Issues: N | PRs: N | 覆盖项目: 10 个
+Issues: N | PRs: N | 覆盖项目: 7 个
 
-## OpenClaw 项目深度报告
+## 第一方重点项目深度报告
   今日速览 / 版本发布 / 项目进展 / 社区热点 /
   Bug稳定性 / 功能请求 / 用户反馈 / 待处理积压
 
 ## 横向生态对比
-  生态全景 / 活跃度对比表 / OpenClaw定位分析 /
+  生态全景 / 活跃度对比表 / 第一方项目定位分析 /
   共同技术方向 / 差异化定位 / 社区热度与成熟度 / 趋势信号
 
 ## 同赛道项目详细报告
-  <details> Zeroclaw   — 今日速览 / 版本发布 / 项目进展 / ...（8节）
-  <details> EasyClaw   — ...
-  <details> LobsterAI  — ...
-  <details> ZeptoClaw  — ...
-  <details> NanoBot    — ...
   <details> PicoClaw   — ...
   <details> NanoClaw   — ...
-  <details> IronClaw   — ...
-  <details> TinyClaw   — ...
   <details> CoPaw      — ...
 ```
 
@@ -328,16 +325,53 @@ OpenAI 内容精选            (research / release / company / safety / ...)
 数据来源: Hacker News（top-30 AI 帖子，过去 24 小时）
 
 今日速览
-热门新闻与讨论
-  🔬 模型与研究   — 新模型发布 / 论文 / 基准测试
+热门帖子与讨论
+  🔬 模型与研究   — 新模型 / 论文 / benchmark
   🛠️ 工具与工程   — 开源项目 / 框架 / 工程实践
-  🏢 产业动态     — 公司新闻 / 融资 / 产品发布
-  💬 观点与争议   — Ask HN / Show HN / 热议帖子
+  🏢 行业动态     — 公司新闻 / 融资 / 产品发布
+  💬 观点与争论   — Ask HN / Show HN / 热门讨论
 社区情绪信号
-值得深读
+值得阅读
 ```
 
-历史简报存储在 [`digests/`](./digests/)。已发布的 Issues 按类型打标签：[`digest`](../../issues?label=digest) · [`openclaw`](../../issues?label=openclaw) · [`web`](../../issues?label=web) · [`trending`](../../issues?label=trending) · [`hn`](../../issues?label=hn)。
+`ai-research.md` / `ai-research-zh.md` 结构（仅在 `REPORT_LANGS` 包含 `zh` 时生成 `-zh` 版本）：
+```
+基于当日雷达综合生成
+
+## 执行摘要
+
+## 研究队列
+  评分：1/5 → 仅观察
+  评分：5/5 → 未来杠杆显著，应主动实现/采用
+
+## 最高信念方向
+
+## 观察清单
+```
+
+`ai-weekly.md` / `ai-weekly-zh.md` 结构（仅在 `REPORT_LANGS` 包含 `zh` 时生成 `-zh` 版本）：
+```
+覆盖区间：YYYY-MM-DD ~ YYYY-MM-DD（最近 7 份日报）
+
+本周亮点
+关键趋势与变化
+重要发布
+社区热度变化
+下周展望
+```
+
+`ai-monthly.md` / `ai-monthly-zh.md` 结构（仅在 `REPORT_LANGS` 包含 `zh` 时生成 `-zh` 版本）：
+```
+来源：N 份周报（若周报少于 2 份，则退回到抽样日报）
+
+本月回顾
+主要主题
+生态变化
+重点项目与发布
+下月前瞻
+```
+
+历史简报存储在 [`digests/`](./digests/)。已发布的 Issues 按类型打标签：[`digest`](../../issues?label=digest) · [`openclaw`](../../issues?label=openclaw) · [`web`](../../issues?label=web) · [`trending`](../../issues?label=trending) · [`hn`](../../issues?label=hn) · [`research`](../../issues?label=research) · [`weekly`](../../issues?label=weekly) · [`monthly`](../../issues?label=monthly)。
 
 ## 定时计划
 

@@ -15,7 +15,7 @@ type ReportLang = "zh" | "en";
 
 // Source report types to read for rollups (in priority order)
 const ROLLUP_SOURCES = ["ai-cli", "ai-agents", "ai-trending", "ai-hn", "ai-web"];
-const LANG_SUFFIX: Record<ReportLang, string> = { zh: "", en: "-en" };
+const LANG_SUFFIX: Record<ReportLang, string> = { zh: "-zh", en: "" };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -32,13 +32,20 @@ function getDateDirs(): string[] {
 
 /** Read and truncate a daily digest file. Returns null if not found. */
 function readDailyDigest(date: string, lang: ReportLang): string | null {
+  const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
   for (const type of ROLLUP_SOURCES) {
-    const p = path.join(DIGESTS_DIR, date, `${type}${LANG_SUFFIX[lang]}.md`);
-    if (fs.existsSync(p)) {
-      const content = fs.readFileSync(p, "utf-8");
-      const truncated = content.slice(0, MAX_CHARS_PER_REPORT);
-      const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
-      return truncated.length < content.length ? truncated + marker : truncated;
+    const candidates = lang === "en"
+      ? [`${type}.md`, `${type}-en.md`]
+      : [`${type}-zh.md`, `${type}.md`];
+    for (const name of candidates) {
+      const p = path.join(DIGESTS_DIR, date, name);
+      try {
+        const content = fs.readFileSync(p, "utf-8");
+        const truncated = content.slice(0, MAX_CHARS_PER_REPORT);
+        return truncated.length < content.length ? truncated + marker : truncated;
+      } catch {
+        continue;
+      }
     }
   }
   return null;
@@ -46,11 +53,18 @@ function readDailyDigest(date: string, lang: ReportLang): string | null {
 
 /** Read a weekly report file. Returns null if not found. */
 function readWeeklyDigest(date: string, lang: ReportLang): string | null {
-  const p = path.join(DIGESTS_DIR, date, `ai-weekly${LANG_SUFFIX[lang]}.md`);
-  if (!fs.existsSync(p)) return null;
-  const content = fs.readFileSync(p, "utf-8");
-  const marker = lang === "en" ? "\n...[truncated]" : "\n...[截断]";
-  return content.slice(0, 3000) + (content.length > 3000 ? marker : "");
+  const candidates = lang === "en" ? ["ai-weekly.md", "ai-weekly-en.md"] : ["ai-weekly-zh.md", "ai-weekly.md"];
+  const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
+  for (const name of candidates) {
+    const p = path.join(DIGESTS_DIR, date, name);
+    try {
+      const content = fs.readFileSync(p, "utf-8");
+      return content.slice(0, 3000) + (content.length > 3000 ? marker : "");
+    } catch {
+      continue;
+    }
+  }
+  return null;
 }
 
 /** Format a date as ISO week string, e.g. "2026-W10". */
@@ -79,7 +93,7 @@ export async function runWeeklyRollup(): Promise<void> {
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter((s): s is ReportLang => s === "zh" || s === "en");
-  const enabledLangs = langs.length > 0 ? langs : ["en"];
+  const enabledLangs: ReportLang[] = langs.length > 0 ? langs : ["en"];
   const genZh = enabledLangs.includes("zh");
   const genEn = enabledLangs.includes("en");
 
@@ -123,7 +137,7 @@ export async function runWeeklyRollup(): Promise<void> {
         `---\n\n` +
         zhSummary +
         footer;
-      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-weekly.md")}`);
+      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-weekly-zh.md")}`);
       if (digestRepo) {
         const url = await createGitHubIssue(`📅 AI 工具生态周报 ${weekStr}`, zhContent, "weekly");
         console.log(`  Created weekly issue: ${url}`);
@@ -144,7 +158,7 @@ export async function runWeeklyRollup(): Promise<void> {
         `---\n\n` +
         enSummary +
         enFooter;
-      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-weekly-en.md")}`);
+      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-weekly.md")}`);
       if (digestRepo) {
         const url = await createGitHubIssue(`📅 AI Tools Ecosystem Weekly Report ${weekStr}`, enContent, "weekly-en");
         console.log(`  Created weekly issue (en): ${url}`);
@@ -172,7 +186,7 @@ export async function runMonthlyRollup(): Promise<void> {
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter((s): s is ReportLang => s === "zh" || s === "en");
-  const enabledLangs = langs.length > 0 ? langs : ["en"];
+  const enabledLangs: ReportLang[] = langs.length > 0 ? langs : ["en"];
   const genZh = enabledLangs.includes("zh");
   const genEn = enabledLangs.includes("en");
 
@@ -235,7 +249,7 @@ export async function runMonthlyRollup(): Promise<void> {
         `---\n\n` +
         zhSummary +
         footer;
-      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-monthly.md")}`);
+      console.log(`  Saved ${saveFile(zhContent, dateStr, "ai-monthly-zh.md")}`);
       if (digestRepo) {
         const url = await createGitHubIssue(`📆 AI 工具生态月报 ${monthStr}`, zhContent, "monthly");
         console.log(`  Created monthly issue: ${url}`);
@@ -256,7 +270,7 @@ export async function runMonthlyRollup(): Promise<void> {
         `---\n\n` +
         enSummary +
         enFooter;
-      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-monthly-en.md")}`);
+      console.log(`  Saved ${saveFile(enContent, dateStr, "ai-monthly.md")}`);
       if (digestRepo) {
         const url = await createGitHubIssue(`📆 AI Tools Ecosystem Monthly Report ${monthStr}`, enContent, "monthly-en");
         console.log(`  Created monthly issue (en): ${url}`);

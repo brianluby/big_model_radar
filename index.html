@@ -285,19 +285,28 @@ function renderMarkdown(raw) {
 
 const LABELS = {
   'ai-cli':          'AI CLI Tools',
+  'ai-cli-zh':       'AI CLI Tools (ZH)',
   'ai-cli-en':       'AI CLI Tools',
   'ai-agents':       'AI Agents Ecosystem',
+  'ai-agents-zh':    'AI Agents Ecosystem (ZH)',
   'ai-agents-en':    'AI Agents Ecosystem',
   'ai-web':          'OpenAI & Anthropic Updates',
+  'ai-web-zh':       'OpenAI & Anthropic Updates (ZH)',
   'ai-web-en':       'OpenAI & Anthropic Updates',
   'ai-trending':     'GitHub AI Trends',
+  'ai-trending-zh':  'GitHub AI Trends (ZH)',
   'ai-trending-en':  'GitHub AI Trends',
   'ai-hn':           'HN Community Digest',
+  'ai-hn-zh':        'HN Community Digest (ZH)',
   'ai-hn-en':        'HN Community Digest',
   'ai-weekly':       'AI Tools Weekly',
+  'ai-weekly-zh':    'AI Tools Weekly (ZH)',
   'ai-weekly-en':    'AI Tools Weekly',
   'ai-monthly':      'AI Tools Monthly',
+  'ai-monthly-zh':   'AI Tools Monthly (ZH)',
   'ai-monthly-en':   'AI Tools Monthly',
+  'ai-research':     'Research Priorities',
+  'ai-research-zh':  'Research Priorities (ZH)',
 };
 
 // ── Theme ──
@@ -443,7 +452,8 @@ async function loadReport(date, report, push = true) {
 }
 
 function baseReportKey(report) {
-  return report.endsWith('-en') ? report.slice(0, -3) : report;
+  if (report.endsWith('-zh') || report.endsWith('-en')) return report.slice(0, -3);
+  return report;
 }
 
 function buildNav(dates) {
@@ -468,10 +478,14 @@ function buildNav(dates) {
 
     const baseReports = [...new Set(reports.map(baseReportKey))];
     baseReports.forEach(r => {
-      const zhKey = r;
-      const enKey = r + '-en';
-      const hasZh = reports.includes(zhKey);
-      const hasEn = reports.includes(enKey);
+      const hasExplicitZh = reports.includes(`${r}-zh`);
+      const hasExplicitEn = reports.includes(`${r}-en`);
+      const hasBase = reports.includes(r);
+      const hasLanguageSuffixes = hasExplicitZh || hasExplicitEn;
+      const zhKey = hasExplicitZh ? `${r}-zh` : null;
+      const enKey = hasBase ? r : hasExplicitEn ? `${r}-en` : null;
+      const hasZh = zhKey !== null;
+      const hasEn = enKey !== null;
 
       if (hasZh && hasEn) {
         // Render as a row with label + [ZH][EN] buttons
@@ -503,7 +517,7 @@ function buildNav(dates) {
         row.append(label, btns);
         list.appendChild(row);
       } else {
-        const reportKey = hasEn ? enKey : zhKey;
+        const reportKey = hasLanguageSuffixes ? (hasEn ? enKey : zhKey) : r;
         const btn = document.createElement('button');
         btn.className = 'rpt-btn';
         btn.dataset.key = `${date}/${reportKey}`;

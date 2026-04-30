@@ -7,39 +7,43 @@ const FEED_PATH = "feed.xml";
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const REPORT_FILES = [
   "ai-cli",
-  "ai-cli-en",
+  "ai-cli-zh",
   "ai-agents",
-  "ai-agents-en",
+  "ai-agents-zh",
   "ai-web",
-  "ai-web-en",
+  "ai-web-zh",
   "ai-trending",
-  "ai-trending-en",
+  "ai-trending-zh",
   "ai-hn",
-  "ai-hn-en",
+  "ai-hn-zh",
   "ai-weekly",
-  "ai-weekly-en",
+  "ai-weekly-zh",
   "ai-monthly",
-  "ai-monthly-en",
+  "ai-monthly-zh",
+  "ai-research",
+  "ai-research-zh",
 ] as const;
 const MAX_FEED_ITEMS = 30;
 type ReportFile = (typeof REPORT_FILES)[number];
 type ReportLang = "zh" | "en";
 
 const REPORT_LABELS: Record<string, string> = {
-  "ai-cli": "AI CLI 工具社区动态日报",
-  "ai-cli-en": "AI CLI Tools Digest",
-  "ai-agents": "AI Agents 生态日报",
-  "ai-agents-en": "AI Agents Ecosystem Digest",
-  "ai-web": "AI 官方内容追踪报告",
-  "ai-web-en": "Official AI Content Report",
-  "ai-trending": "AI 开源趋势日报",
-  "ai-trending-en": "AI Open Source Trends",
-  "ai-hn": "Hacker News AI 社区动态日报",
-  "ai-hn-en": "Hacker News AI Community Digest",
-  "ai-weekly": "AI 工具生态周报",
-  "ai-weekly-en": "AI Tools Weekly Digest",
-  "ai-monthly": "AI 工具生态月报",
-  "ai-monthly-en": "AI Tools Monthly Digest",
+  "ai-cli": "AI CLI Tools Digest",
+  "ai-cli-zh": "AI CLI 工具社区动态日报",
+  "ai-agents": "AI Agent Ecosystem Digest",
+  "ai-agents-zh": "AI 智能体生态日报",
+  "ai-web": "Official AI Content Report",
+  "ai-web-zh": "AI 官方内容追踪报告",
+  "ai-trending": "AI Open Source Trends",
+  "ai-trending-zh": "AI 开源趋势日报",
+  "ai-hn": "Hacker News AI Community Digest",
+  "ai-hn-zh": "Hacker News AI 社区动态日报",
+  "ai-weekly": "AI Tools Weekly Digest",
+  "ai-weekly-zh": "AI 工具生态周报",
+  "ai-monthly": "AI Tools Monthly Digest",
+  "ai-monthly-zh": "AI 工具生态月报",
+  "ai-research": "Research Priorities Digest",
+  "ai-research-zh": "研究优先级简报",
 };
 
 function enabledLangs(): ReportLang[] {
@@ -51,7 +55,7 @@ function enabledLangs(): ReportLang[] {
 }
 
 function reportLang(report: ReportFile): ReportLang {
-  return report.endsWith("-en") ? "en" : "zh";
+  return report.endsWith("-zh") ? "zh" : "en";
 }
 
 function feedLanguage(langs: ReportLang[]): string {
@@ -103,12 +107,14 @@ const ENABLED_LANG_SET = new Set<ReportLang>(ENABLED_LANGS);
 const ACTIVE_REPORT_FILES = REPORT_FILES.filter((report) => ENABLED_LANG_SET.has(reportLang(report)));
 
 const entries = fs
-  .readdirSync(DIGESTS_DIR)
-  .filter((name) => DATE_RE.test(name) && fs.statSync(path.join(DIGESTS_DIR, name)).isDirectory())
+  .readdirSync(DIGESTS_DIR, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && DATE_RE.test(d.name))
+  .map((d) => d.name)
   .sort()
   .reverse()
   .map((date) => {
-    const reports = ACTIVE_REPORT_FILES.filter((r) => fs.existsSync(path.join(DIGESTS_DIR, date, `${r}.md`)));
+    const files = new Set(fs.readdirSync(path.join(DIGESTS_DIR, date)));
+    const reports = ACTIVE_REPORT_FILES.filter((r) => files.has(`${r}.md`));
     return { date, reports };
   })
   .filter((e) => e.reports.length > 0);

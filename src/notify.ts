@@ -37,6 +37,7 @@ const ZH_LABELS: Record<string, string> = {
   "ai-hn": "HN 社区动态",
   "ai-weekly": "AI 工具生态周报",
   "ai-monthly": "AI 工具生态月报",
+  "ai-research": "研究优先级",
 };
 
 const EN_LABELS: Record<string, string> = {
@@ -47,6 +48,7 @@ const EN_LABELS: Record<string, string> = {
   "ai-hn": "HN Community",
   "ai-weekly": "AI Tools Weekly",
   "ai-monthly": "AI Tools Monthly",
+  "ai-research": "Research Priorities",
 };
 
 async function sendTelegram(text: string): Promise<void> {
@@ -68,7 +70,9 @@ async function sendTelegram(text: string): Promise<void> {
 }
 
 function buildMessage(date: string, reports: string[]): string {
-  const baseReports = [...new Set(reports.map((r) => (r.endsWith("-en") ? r.slice(0, -3) : r)))];
+  const baseReports = [
+    ...new Set(reports.map((r) => (r.endsWith("-zh") || r.endsWith("-en") ? r.slice(0, -3) : r))),
+  ];
   const isWeekly = baseReports.includes("ai-weekly");
   const isMonthly = baseReports.includes("ai-monthly");
 
@@ -83,11 +87,12 @@ function buildMessage(date: string, reports: string[]): string {
   ];
 
   for (const r of ordered) {
-    const hasZh = reports.includes(r);
-    const enKey = `${r}-en`;
+    const enKey = r;
+    const zhKey = `${r}-zh`;
     const hasEn = reports.includes(enKey);
+    const hasZh = reports.includes(zhKey);
     const zhLabel = ZH_LABELS[r] ?? r;
-    const zhUrl = `${PAGES_URL}/#${date}/${r}`;
+    const zhUrl = `${PAGES_URL}/#${date}/${zhKey}`;
     if (hasZh && hasEn) {
       const enLabel = EN_LABELS[r] ?? "EN";
       const enUrl = `${PAGES_URL}/#${date}/${enKey}`;

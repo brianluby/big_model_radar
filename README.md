@@ -110,23 +110,26 @@ Subscribe to get daily digest notifications pushed directly to Telegram. Each me
 
 PRs and issues are fetched without a date filter and sorted by popularity (comment count), so the report always reflects the most actively discussed skills — not just the newest.
 
-### OpenClaw + AI agent ecosystem (GitHub)
+### First-party AI agents (GitHub)
 
-OpenClaw is tracked as the primary reference project. Ten peer projects in the personal AI assistant / autonomous agent space are tracked alongside it for cross-ecosystem comparison.
+Four first-party reference agents are tracked with dedicated deep dives inside the daily agent ecosystem report.
 
 | Project | Repository | Stars |
 |---------|-----------|-------|
-| OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | 240.5k |
-| NanoBot | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | 26.9k |
-| Zeroclaw | [zeroclaw-labs/zeroclaw](https://github.com/zeroclaw-labs/zeroclaw) | 21.2k |
-| PicoClaw | [sipeed/picoclaw](https://github.com/sipeed/picoclaw) | 21.1k |
-| NanoClaw | [qwibitai/nanoclaw](https://github.com/qwibitai/nanoclaw) | 16.6k |
-| IronClaw | [nearai/ironclaw](https://github.com/nearai/ironclaw) | 3.9k |
-| LobsterAI | [netease-youdao/LobsterAI](https://github.com/netease-youdao/LobsterAI) | 3.0k |
-| TinyClaw | [TinyAGI/tinyclaw](https://github.com/TinyAGI/tinyclaw) | 2.8k |
-| CoPaw | [agentscope-ai/CoPaw](https://github.com/agentscope-ai/CoPaw) | 2.2k |
-| ZeptoClaw | [qhkm/zeptoclaw](https://github.com/qhkm/zeptoclaw) | 394 |
-| EasyClaw | [gaoyangz77/easyclaw](https://github.com/gaoyangz77/easyclaw) | 102 |
+| OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | 366.7k |
+| Hermes Agent | [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) | 126.4k |
+| Zeroclaw | [zeroclaw-labs/zeroclaw](https://github.com/zeroclaw-labs/zeroclaw) | 30.8k |
+| Moltis | [moltis-org/moltis](https://github.com/moltis-org/moltis) | 2.6k |
+
+### Peer agent projects (GitHub)
+
+A smaller peer set is tracked for cross-ecosystem comparison, focusing on projects that still bring distinct product or technical ideas.
+
+| Project | Repository | Why it remains |
+|---------|-----------|----------------|
+| PicoClaw | [sipeed/picoclaw](https://github.com/sipeed/picoclaw) | Ultra-efficient Go agent aimed at constrained / edge deployments |
+| NanoClaw | [qwibitai/nanoclaw](https://github.com/qwibitai/nanoclaw) | Container-isolated assistant with strong messaging/gateway surface |
+| CoPaw | [agentscope-ai/CoPaw](https://github.com/agentscope-ai/CoPaw) | AgentScope/Qwen ecosystem entrant with broad chat-app deployment focus |
 
 ### GitHub AI Trending
 
@@ -157,7 +160,7 @@ New articles are detected by comparing sitemap `lastmod` timestamps against a pe
 - Fetches issues, pull requests, and releases updated in the last 24 hours across all tracked repos
 - Tracks trending Claude Code Skills — sorted by community engagement, not recency
 - Generates a per-tool summary for each CLI repository and a cross-tool comparative analysis
-- Generates a deep OpenClaw project report plus a cross-ecosystem comparison against 10 peer projects
+- Generates deep first-party agent reports plus a cross-ecosystem comparison against a curated peer set
 - Scrapes official Anthropic and OpenAI web content via sitemaps; detects new articles incrementally
 - Monitors GitHub Trending daily + searches 6 AI topic tags; classifies repos by dimension and extracts trend signals
 - Fetches top-30 AI stories from Hacker News (last 24h, ranked by points); generates community sentiment report
@@ -180,8 +183,8 @@ cli_repos:
     repo: owner/my-ai-cli
     name: My AI Tool
 
-# Add a new peer project to the OpenClaw ecosystem comparison
-openclaw_peers:
+# Add a new peer project to the agent ecosystem comparison
+peer_agents:
   - id: my-agent
     repo: owner/my-agent
     name: My Agent
@@ -244,11 +247,12 @@ Files are written to `digests/YYYY-MM-DD/`:
 
 | File | Content | GitHub Issue label |
 |------|---------|-------------------|
-| `ai-cli-en.md` | CLI digest — cross-tool comparison + per-tool details | `digest-en` |
-| `ai-agents-en.md` | OpenClaw deep report + cross-ecosystem comparison + 10 peer details | `openclaw-en` |
-| `ai-web-en.md` | Official web content report (only written when new content exists) | `web-en` |
-| `ai-trending-en.md` | GitHub AI trending report — repos classified by dimension + trend signals (only written when data is available) | `trending-en` |
-| `ai-hn-en.md` | Hacker News AI community digest — top stories + sentiment analysis (only written when fetch succeeds) | `hn-en` |
+| `ai-cli.md` | CLI digest — cross-tool comparison + per-tool details | `digest-en` |
+| `ai-agents.md` | First-party agent deep dives + cross-ecosystem comparison + peer details | `openclaw-en` (legacy label name retained for continuity) |
+| `ai-web.md` | Official web content report (only written when new content exists) | `web-en` |
+| `ai-trending.md` | GitHub AI trending report — repos classified by dimension + trend signals (only written when data is available) | `trending-en` |
+| `ai-hn.md` | Hacker News AI community digest — top stories + sentiment analysis (only written when fetch succeeds) | `hn-en` |
+| `ai-research.md` | Internal research-priorities memo with 1–5 implementation ranking | `research-en` |
 
 A shared state file `digests/web-state.json` tracks which web URLs have been seen; it is committed alongside the daily digests.
 
@@ -256,7 +260,7 @@ This fork is configured for English-only output. Set `REPORT_LANGS=zh,en` only i
 
 ---
 
-`ai-cli-en.md` structure:
+`ai-cli.md` structure:
 ```
 ## Cross-Tool Comparison
   Ecosystem overview / Activity comparison table / Shared themes / Differentiation / Trend signals
@@ -274,32 +278,25 @@ This fork is configured for English-only output. Set `REPORT_LANGS=zh,en` only i
   <details> Qwen Code      — ...
 ```
 
-`ai-agents-en.md` structure:
+`ai-agents.md` structure:
 ```
-Issues: N | PRs: N | Projects covered: 10
+Issues: N | PRs: N | Projects covered: 7
 
-## OpenClaw Deep Dive
+## First-Party Agent Deep Dives
   Today's summary / Releases / Project progress / Community highlights /
   Bug stability / Feature requests / User feedback / Backlog
 
 ## Cross-Ecosystem Comparison
-  Ecosystem overview / Activity table / OpenClaw positioning /
+  Ecosystem overview / Activity table / first-party positioning /
   Shared technical directions / Differentiation / Community maturity / Trend signals
 
 ## Peer Project Reports
-  <details> Zeroclaw   — Today's summary / Releases / Progress / ... (8 sections)
-  <details> EasyClaw   — ...
-  <details> LobsterAI  — ...
-  <details> ZeptoClaw  — ...
-  <details> NanoBot    — ...
   <details> PicoClaw   — ...
   <details> NanoClaw   — ...
-  <details> IronClaw   — ...
-  <details> TinyClaw   — ...
   <details> CoPaw      — ...
 ```
 
-`ai-web.md` / `ai-web-en.md` structure:
+`ai-web.md` / `ai-web-zh.md` structure:
 ```
 Sources: anthropic.com (N articles) + openai.com (N articles)
 
@@ -311,7 +308,7 @@ Notable details
 [First full crawl also includes: Content landscape overview]
 ```
 
-`ai-trending.md` / `ai-trending-en.md` structure:
+`ai-trending.md` / `ai-trending-zh.md` structure:
 ```
 Sources: GitHub Trending + GitHub Search API
 
@@ -326,7 +323,7 @@ Trend signal analysis
 Community focus
 ```
 
-`ai-hn.md` / `ai-hn-en.md` structure:
+`ai-hn.md` / `ai-hn-zh.md` structure:
 ```
 Sources: Hacker News (top-30 AI stories, last 24h)
 
@@ -340,7 +337,22 @@ Community sentiment signals
 Worth reading
 ```
 
-`ai-weekly.md` / `ai-weekly-en.md` structure (generated every Monday):
+`ai-research.md` / `ai-research-zh.md` structure:
+```
+Derived from the daily radar
+
+## Executive Summary
+
+## Research Queue
+  Rank: 1/5 → monitor only
+  Rank: 5/5 → significant future leverage, implement/adopt
+
+## Highest-Conviction Bets
+
+## Watchlist
+```
+
+`ai-weekly.md` / `ai-weekly-zh.md` structure (generated every Monday):
 ```
 Coverage: YYYY-MM-DD ~ YYYY-MM-DD  (last 7 daily digests)
 
@@ -351,7 +363,7 @@ Community momentum
 Outlook
 ```
 
-`ai-monthly.md` / `ai-monthly-en.md` structure (generated on the 1st of each month):
+`ai-monthly.md` / `ai-monthly-zh.md` structure (generated on the 1st of each month):
 ```
 Sources: N weekly reports  (or sampled daily reports if fewer than 2 weeklies available)
 
@@ -362,7 +374,7 @@ Top projects & releases
 Looking ahead
 ```
 
-Historical digests are stored in [`digests/`](./digests/). Published issues are tagged by type: [`digest`](../../issues?label=digest) · [`openclaw`](../../issues?label=openclaw) · [`web`](../../issues?label=web) · [`trending`](../../issues?label=trending) · [`hn`](../../issues?label=hn) · [`weekly`](../../issues?label=weekly) · [`monthly`](../../issues?label=monthly).
+Historical digests are stored in [`digests/`](./digests/). Published issues are tagged by type: [`digest`](../../issues?label=digest) · [`openclaw`](../../issues?label=openclaw) · [`web`](../../issues?label=web) · [`trending`](../../issues?label=trending) · [`hn`](../../issues?label=hn) · [`research`](../../issues?label=research) · [`weekly`](../../issues?label=weekly) · [`monthly`](../../issues?label=monthly).
 
 ## Schedule
 

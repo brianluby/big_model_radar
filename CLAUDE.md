@@ -28,10 +28,10 @@ export DIGEST_REPO=owner/repo   # omit to skip GitHub issue creation
 
 The pipeline runs in four sequential phases, each implemented as a named async function in `src/index.ts`:
 
-1. **`fetchAllData`** — all network I/O in parallel: GitHub API (issues/PRs/releases) for 17 repos, Claude Code Skills, Anthropic/OpenAI sitemaps, GitHub Trending HTML + Search API, Hacker News Algolia API.
+1. **`fetchAllData`** — all network I/O in parallel: GitHub API (issues/PRs/releases) for 14 repos, Claude Code Skills, Anthropic/OpenAI sitemaps, GitHub Trending HTML + Search API, Hacker News Algolia API.
 2. **`generateSummaries`** — per-repo LLM calls, all in parallel, rate-limited to 5 concurrent requests by a queue in `src/report.ts`.
-3. **Comparisons** — two LLM calls: cross-tool CLI comparison and OpenClaw cross-ecosystem comparison.
-4. **Save phase** — `buildCliReportContent` / `buildOpenclawReportContent` build Markdown strings; `saveWebReport` / `saveTrendingReport` / `saveHnReport` call LLM + write file + create GitHub Issue.
+3. **Comparisons** — two LLM calls: cross-tool CLI comparison and AI agent ecosystem comparison.
+4. **Save phase** — `buildCliReportContent` / `buildAgentReportContent` build Markdown strings; `saveWebReport` / `saveTrendingReport` / `saveHnReport` / `saveResearchReport` call LLM + write file + create GitHub Issue.
 
 ## Source files
 
@@ -52,16 +52,18 @@ Files written to `digests/YYYY-MM-DD/`:
 
 | File | Label | Notes |
 |------|-------|-------|
-| `ai-cli-en.md` | `digest-en` | Always generated |
-| `ai-agents-en.md` | `openclaw-en` | Always generated |
-| `ai-web-en.md` | `web-en` | Skipped if no new sitemap content |
-| `ai-trending-en.md` | `trending-en` | Skipped if both data sources fail |
-| `ai-hn-en.md` | `hn-en` | Skipped if Algolia fetch fails |
+| `ai-cli.md` | `digest-en` | Always generated |
+| `ai-agents.md` | `openclaw-en` | Always generated; legacy label name retained for continuity |
+| `ai-web.md` | `web-en` | Skipped if no new sitemap content |
+| `ai-trending.md` | `trending-en` | Skipped if both data sources fail |
+| `ai-hn.md` | `hn-en` | Skipped if Algolia fetch fails |
+| `ai-research.md` | `research-en` | Always generated from the daily radar |
 
 ## Tracked sources
 
-- **CLI_REPOS** (6): claude-code, codex, gemini-cli, kimi-cli, opencode, qwen-code
-- **OPENCLAW** + **OPENCLAW_PEERS** (11): openclaw/openclaw + 10 peer projects (sorted by stars)
+- **CLI_REPOS** (7): claude-code, codex, gemini-cli, copilot-cli, kimi-cli, opencode, qwen-code
+- **FIRST_PARTY_AGENTS** (4): openclaw, hermes-agent, zeroclaw, moltis
+- **PEER_AGENTS** (3): picoclaw, nanoclaw, copaw
 - **CLAUDE_SKILLS_REPO**: anthropics/skills — no date filter, sorted by popularity
 - **Web**: anthropic.com + openai.com via sitemap, state in `digests/web-state.json`
 - **Trending**: github.com/trending (HTML) + GitHub Search API (6 AI topics, 7-day window)

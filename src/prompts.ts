@@ -254,17 +254,20 @@ ${prsText}
 }
 
 export function buildPeersComparisonPrompt(
-  openclawDigest: RepoDigest,
+  firstPartyDigests: RepoDigest[],
   peerDigests: RepoDigest[],
   dateStr: string,
   lang: "zh" | "en" = "zh",
 ): string {
   const noActivityStr = lang === "en" ? "No activity in the last 24 hours." : "过去24小时无活动。";
 
-  const openclawSection =
-    lang === "en"
-      ? `## OpenClaw (core reference, github.com/${openclawDigest.config.repo})\n${openclawDigest.summary}`
-      : `## OpenClaw（核心参照，github.com/${openclawDigest.config.repo}）\n${openclawDigest.summary}`;
+  const firstPartySections = firstPartyDigests
+    .map((d) => {
+      const hasData = d.issues.length || d.prs.length || d.releases.length;
+      if (!hasData) return `## ${d.config.name} (github.com/${d.config.repo})\n${noActivityStr}`;
+      return `## ${d.config.name} (github.com/${d.config.repo})\n${d.summary}`;
+    })
+    .join("\n\n---\n\n");
 
   const peerSections = peerDigests
     .map((d) => {
@@ -277,9 +280,13 @@ export function buildPeersComparisonPrompt(
   if (lang === "en") {
     return `You are a senior analyst of the AI agent and personal AI assistant open-source ecosystem. The following are ${dateStr} community digest summaries for each project.
 
-${openclawSection}
+## First-party reference agents
+
+${firstPartySections}
 
 ---
+
+## Peer projects
 
 ${peerSections}
 
@@ -289,7 +296,7 @@ Generate a cross-project comparison report in English with these sections:
 
 1. **Ecosystem Overview** - 3-5 sentences on the overall personal AI assistant / agent open-source landscape
 2. **Activity Comparison** - Table comparing Issues count, PR count, Release status, and health score for each project
-3. **OpenClaw's Position** - Advantages vs peers, technical approach differences, community size comparison
+3. **First-Party Agent Positioning** - How OpenClaw, Hermes Agent, Zeroclaw, and Moltis differ from each other and from the peer set
 4. **Shared Technical Focus Areas** - Requirements emerging across multiple projects (note which projects, specific needs)
 5. **Differentiation Analysis** - Key differences in feature focus, target users, technical architecture
 6. **Community Momentum & Maturity** - Activity tiers, which are rapidly iterating, which are stabilizing
@@ -301,9 +308,13 @@ Style: concise and professional, data-backed, suited for technical decision-make
 
   return `你是一位专注于 AI 智能体与个人 AI 助手开源生态的资深技术分析师。以下是 ${dateStr} 各开源项目的社区动态摘要。
 
-${openclawSection}
+## 第一方重点项目
+
+${firstPartySections}
 
 ---
+
+## 同赛道项目
 
 ${peerSections}
 
@@ -313,7 +324,7 @@ ${peerSections}
 
 1. **生态全景** - 用3-5句话概括个人 AI 助手/自主智能体开源生态整体态势
 2. **各项目活跃度对比** - 以表格形式汇总各项目今日的 Issues 数、PR 数、Release 情况及健康度评估
-3. **OpenClaw 在生态中的定位** - 与同类相比的优势、技术路线差异、社区规模对比
+3. **第一方重点项目定位** - 比较 OpenClaw、Hermes Agent、Zeroclaw、Moltis 彼此之间以及相对同赛道项目的定位差异
 4. **共同关注的技术方向** - 多项目共同涌现的需求（注明涉及哪些项目、具体诉求）
 5. **差异化定位分析** - 功能侧重、目标用户、技术架构的关键差异
 6. **社区热度与成熟度** - 活跃度分层，哪些处于快速迭代阶段，哪些在质量巩固阶段
@@ -681,6 +692,166 @@ ${siteSections}
 
 ${isAnyFirstRun ? "6. **内容格局总览** — 首次全量独有：汇总两家公司各内容类别的数量分布，并说明各自的内容运营风格（学术导向 vs 产品导向 vs 用户故事等）\n\n" : ""}语言要求：中文，专业深入，内容详实，适合 AI 领域研究者、产品经理和技术决策者阅读。每个条目必须附上 GitHub/官网链接。
 `;
+}
+
+
+export function buildResearchPriorityPrompt(
+  cliDigests: RepoDigest[],
+  firstPartyDigests: RepoDigest[],
+  peerDigests: RepoDigest[],
+  skillsSummary: string,
+  cliComparison: string,
+  agentComparison: string,
+  webResults: WebFetchResult[],
+  trendingData: TrendingData,
+  hnData: HnData,
+  dateStr: string,
+  lang: "zh" | "en" = "zh",
+): string {
+  const digestSections = (digests: RepoDigest[]) =>
+    digests
+      .map((d) => `## ${d.config.name} (github.com/${d.config.repo})\n${d.summary}`)
+      .join("\n\n---\n\n");
+
+  const webSection = webResults
+    .map((r) => {
+      const items = r.newItems
+        .slice(0, 8)
+        .map((item) => `- [${item.title || item.url}](${item.url}) | ${item.category} | ${item.lastmod.slice(0, 10)}`)
+        .join("\n");
+      return `## ${r.siteName}\n${items || (lang === "en" ? "- No new items" : "- 暂无新增")}`;
+    })
+    .join("\n\n");
+
+  const trendingSection = [
+    ...trendingData.trendingRepos
+      .slice(0, 10)
+      .map((r) => `- [${r.fullName}](${r.url}) | ★${r.totalStars} | +${r.todayStars ?? 0} today | ${r.description ?? ""}`),
+    ...trendingData.searchRepos
+      .slice(0, 10)
+      .map((r) => `- [${r.fullName}](${r.url}) | ★${r.stargazersCount} | query: ${r.searchQuery} | ${r.description ?? ""}`),
+  ].join("\n") || (lang === "en" ? "- No trending data" : "- 暂无趋势数据");
+
+  const hnSection = hnData.stories
+    .slice(0, 12)
+    .map((s) => `- [${s.title}](${s.url}) | HN comments: ${s.comments} | points: ${s.points}`)
+    .join("\n") || (lang === "en" ? "- No HN stories" : "- 暂无 HN 数据");
+
+  if (lang === "en") {
+    return `You are an AI product and research strategist. Based on the following daily radar inputs for ${dateStr}, produce an internal research-priorities memo.
+
+Your job is to surface concrete tools, methods, integrations, workflows, or product ideas worth researching further, then rank them from 1-5 for implementation value.
+
+Rank definition:
+- 1 = interesting but not likely worth implementing
+- 2 = worth monitoring, but low expected leverage
+- 3 = worth a small spike or experiment
+- 4 = likely strong value, should be scheduled soon
+- 5 = significant strategic value, we should actively implement or adopt
+
+When assigning the rank, use forward-looking judgment: consider how the capability could help with future agent workflows, automation, multi-platform operations, research acceleration, product quality, team leverage, or local/hosted deployment flexibility.
+
+## Cross-tool CLI comparison
+${cliComparison}
+
+## First-party + peer agent ecosystem comparison
+${agentComparison}
+
+## CLI repository digests
+${digestSections(cliDigests)}
+
+## First-party agent digests
+${digestSections(firstPartyDigests)}
+
+## Peer agent digests
+${digestSections(peerDigests)}
+
+## Claude Code Skills highlights
+${skillsSummary}
+
+## Official web updates
+${webSection}
+
+## GitHub trending signals
+${trendingSection}
+
+## Hacker News signals
+${hnSection}
+
+---
+
+Generate an English markdown memo with these sections:
+
+1. **Executive Summary** — 4-6 sentences on the most important themes worth our attention
+2. **Research Queue** — 8-12 concrete items we should investigate, each with:
+   - **Rank: X/5**
+   - **What to research**
+   - **Why it matters now**
+   - **Future leverage** — how it could help in future adventures or workflows
+   - **Evidence** — specific repos, issues, PRs, launches, articles, or HN/trending signals
+   - **Suggested next step** — ignore / monitor / test / prototype / implement
+3. **Highest-Conviction Bets** — top 3 items only, with stronger strategic rationale
+4. **Watchlist** — 3-5 things that are not implementation priorities yet but should be monitored
+
+Be specific, opinionated, and practical. Prefer concrete capabilities over vague trends.`;
+  }
+
+  return `你是一位 AI 产品与研究策略分析师。请基于 ${dateStr} 的每日雷达输入，生成一份内部《研究优先级简报》。
+
+你的任务是从这些日报中提炼出值得继续研究的具体工具、方法、集成方向、工作流或产品想法，并按 1-5 分给出实现价值排序。
+
+评分定义：
+- 1 = 有意思，但大概率不值得实现
+- 2 = 值得观察，但杠杆较低
+- 3 = 值得做一个小实验或技术预研
+- 4 = 价值较强，应该尽快排期
+- 5 = 战略价值显著，应主动推进实现或采用
+
+评分时请使用前瞻性视角：考虑这些能力如何帮助未来的 agent 工作流、自动化、多平台运营、研究提速、产品质量提升、团队杠杆增强，或本地/托管部署灵活性。
+
+## CLI 工具横向对比
+${cliComparison}
+
+## 智能体生态横向对比
+${agentComparison}
+
+## CLI 仓库日报
+${digestSections(cliDigests)}
+
+## 第一方智能体日报
+${digestSections(firstPartyDigests)}
+
+## 同赛道项目日报
+${digestSections(peerDigests)}
+
+## Claude Code Skills 热点
+${skillsSummary}
+
+## 官网更新
+${webSection}
+
+## GitHub 趋势信号
+${trendingSection}
+
+## Hacker News 信号
+${hnSection}
+
+---
+
+请输出一份中文 markdown 简报，包含以下部分：
+
+1. **执行摘要** — 用 4-6 句话总结最值得关注的主题
+2. **研究队列** — 给出 8-12 个值得继续研究的具体事项，每项包含：
+   - **评分：X/5**
+   - **要研究什么**
+   - **为什么现在重要**
+   - **未来杠杆** —— 它未来如何帮助我们的冒险/工作流
+   - **证据** —— 对应的 repo、issue、PR、发布、文章或 HN/趋势信号
+   - **建议下一步** —— 忽略 / 观察 / 测试 / 原型 / 实现
+3. **最高信念方向** — 只列前 3 项，并给出更强的战略理由
+4. **观察清单** — 3-5 个暂时不应投入实现、但值得持续跟踪的方向
+
+请务必具体、明确、务实，优先输出可执行能力而不是空泛趋势。`;
 }
 
 export function buildWeeklyPrompt(

@@ -22,6 +22,8 @@ interface RawRepoEntry {
 interface RawConfig {
   cli_repos?: RawRepoEntry[];
   skills_repo?: string;
+  first_party_agents?: RawRepoEntry[];
+  peer_agents?: RawRepoEntry[];
   openclaw?: RawRepoEntry;
   openclaw_peers?: RawRepoEntry[];
 }
@@ -29,8 +31,8 @@ interface RawConfig {
 export interface RadarConfig {
   cliRepos: RepoConfig[];
   skillsRepo: string;
-  openclaw: RepoConfig;
-  openclawPeers: RepoConfig[];
+  firstPartyAgents: RepoConfig[];
+  peerAgents: RepoConfig[];
 }
 
 // ---------------------------------------------------------------------------
@@ -49,24 +51,17 @@ const DEFAULT_CLI_REPOS: RepoConfig[] = [
 
 const DEFAULT_SKILLS_REPO = "anthropics/skills";
 
-const DEFAULT_OPENCLAW: RepoConfig = {
-  id: "openclaw",
-  repo: "openclaw/openclaw",
-  name: "OpenClaw",
-  paginated: true,
-};
-
-const DEFAULT_OPENCLAW_PEERS: RepoConfig[] = [
-  { id: "nanobot", repo: "HKUDS/nanobot", name: "NanoBot", paginated: true },
+const DEFAULT_FIRST_PARTY_AGENTS: RepoConfig[] = [
+  { id: "openclaw", repo: "openclaw/openclaw", name: "OpenClaw", paginated: true },
+  { id: "hermes-agent", repo: "NousResearch/hermes-agent", name: "Hermes Agent", paginated: true },
   { id: "zeroclaw", repo: "zeroclaw-labs/zeroclaw", name: "Zeroclaw" },
+  { id: "moltis", repo: "moltis-org/moltis", name: "Moltis" },
+];
+
+const DEFAULT_PEER_AGENTS: RepoConfig[] = [
   { id: "picoclaw", repo: "sipeed/picoclaw", name: "PicoClaw", paginated: true },
   { id: "nanoclaw", repo: "qwibitai/nanoclaw", name: "NanoClaw" },
-  { id: "ironclaw", repo: "nearai/ironclaw", name: "IronClaw" },
-  { id: "lobsterai", repo: "netease-youdao/LobsterAI", name: "LobsterAI" },
-  { id: "tinyclaw", repo: "TinyAGI/tinyclaw", name: "TinyClaw" },
   { id: "copaw", repo: "agentscope-ai/CoPaw", name: "CoPaw" },
-  { id: "zeptoclaw", repo: "qhkm/zeptoclaw", name: "ZeptoClaw" },
-  { id: "easyclaw", repo: "gaoyangz77/easyclaw", name: "EasyClaw" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -80,17 +75,18 @@ function toRepoConfig(e: RawRepoEntry): RepoConfig {
 export function loadConfig(configPath = "config.yml"): RadarConfig {
   const resolved = path.resolve(configPath);
 
-  if (!fs.existsSync(resolved)) {
+  let raw: RawConfig;
+  try {
+    raw = yaml.load(fs.readFileSync(resolved, "utf-8")) as RawConfig;
+  } catch {
     console.log(`[config] ${configPath} not found — using built-in defaults.`);
     return {
       cliRepos: DEFAULT_CLI_REPOS,
       skillsRepo: DEFAULT_SKILLS_REPO,
-      openclaw: DEFAULT_OPENCLAW,
-      openclawPeers: DEFAULT_OPENCLAW_PEERS,
+      firstPartyAgents: DEFAULT_FIRST_PARTY_AGENTS,
+      peerAgents: DEFAULT_PEER_AGENTS,
     };
   }
-
-  const raw = yaml.load(fs.readFileSync(resolved, "utf-8")) as RawConfig;
 
   const cliRepos =
     Array.isArray(raw?.cli_repos) && raw.cli_repos.length > 0
@@ -102,17 +98,24 @@ export function loadConfig(configPath = "config.yml"): RadarConfig {
       ? raw.skills_repo.trim()
       : DEFAULT_SKILLS_REPO;
 
-  const openclaw = raw?.openclaw?.id && raw.openclaw.repo ? toRepoConfig(raw.openclaw) : DEFAULT_OPENCLAW;
+  const firstPartyAgents =
+    Array.isArray(raw?.first_party_agents) && raw.first_party_agents.length > 0
+      ? raw.first_party_agents.map(toRepoConfig)
+      : raw?.openclaw?.id && raw.openclaw.repo
+        ? [toRepoConfig(raw.openclaw), ...DEFAULT_FIRST_PARTY_AGENTS.filter((cfg) => cfg.id !== raw.openclaw?.id)]
+        : DEFAULT_FIRST_PARTY_AGENTS;
 
-  const openclawPeers =
-    Array.isArray(raw?.openclaw_peers) && raw.openclaw_peers.length > 0
-      ? raw.openclaw_peers.map(toRepoConfig)
-      : DEFAULT_OPENCLAW_PEERS;
+  const peerAgents =
+    Array.isArray(raw?.peer_agents) && raw.peer_agents.length > 0
+      ? raw.peer_agents.map(toRepoConfig)
+      : Array.isArray(raw?.openclaw_peers) && raw.openclaw_peers.length > 0
+        ? raw.openclaw_peers.map(toRepoConfig)
+        : DEFAULT_PEER_AGENTS;
 
   console.log(
     `[config] Loaded from ${configPath}: ` +
-      `${cliRepos.length} CLI repos, ${openclawPeers.length} OpenClaw peers`,
+      `${cliRepos.length} CLI repos, ${firstPartyAgents.length} first-party agents, ${peerAgents.length} peer agents`,
   );
 
-  return { cliRepos, skillsRepo, openclaw, openclawPeers };
+  return { cliRepos, skillsRepo, firstPartyAgents, peerAgents };
 }
