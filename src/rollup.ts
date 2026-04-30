@@ -34,9 +34,7 @@ function getDateDirs(): string[] {
 function readDailyDigest(date: string, lang: ReportLang): string | null {
   const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
   for (const type of ROLLUP_SOURCES) {
-    const candidates = lang === "en"
-      ? [`${type}.md`, `${type}-en.md`]
-      : [`${type}-zh.md`, `${type}.md`];
+    const candidates = lang === "en" ? [`${type}.md`, `${type}-en.md`] : [`${type}-zh.md`, `${type}.md`];
     for (const name of candidates) {
       const p = path.join(DIGESTS_DIR, date, name);
       try {
@@ -53,7 +51,8 @@ function readDailyDigest(date: string, lang: ReportLang): string | null {
 
 /** Read a weekly report file. Returns null if not found. */
 function readWeeklyDigest(date: string, lang: ReportLang): string | null {
-  const candidates = lang === "en" ? ["ai-weekly.md", "ai-weekly-en.md"] : ["ai-weekly-zh.md", "ai-weekly.md"];
+  const candidates =
+    lang === "en" ? ["ai-weekly.md", "ai-weekly-en.md"] : ["ai-weekly-zh.md", "ai-weekly.md"];
   const marker = lang === "en" ? "\n...[truncated]" : "\n...[摘要截断]";
   for (const name of candidates) {
     const p = path.join(DIGESTS_DIR, date, name);
@@ -160,7 +159,11 @@ export async function runWeeklyRollup(): Promise<void> {
         enFooter;
       console.log(`  Saved ${saveFile(enContent, dateStr, "ai-weekly.md")}`);
       if (digestRepo) {
-        const url = await createGitHubIssue(`📅 AI Tools Ecosystem Weekly Report ${weekStr}`, enContent, "weekly-en");
+        const url = await createGitHubIssue(
+          `📅 AI Tools Ecosystem Weekly Report ${weekStr}`,
+          enContent,
+          "weekly-en",
+        );
         console.log(`  Created weekly issue (en): ${url}`);
       }
     }
@@ -208,7 +211,8 @@ export async function runMonthlyRollup(): Promise<void> {
   for (const lang of enabledLangs) {
     const weeklyDates = monthDates.filter((date) => hasWeeklyForLang(date, lang));
     if (weeklyDates.length >= 2) {
-      sourceByLang[lang].label = lang === "en" ? `${weeklyDates.length} weekly reports` : `${weeklyDates.length} 份周报`;
+      sourceByLang[lang].label =
+        lang === "en" ? `${weeklyDates.length} weekly reports` : `${weeklyDates.length} 份周报`;
       for (const date of weeklyDates) {
         const content = readWeeklyDigest(date, lang);
         if (content) sourceByLang[lang].digests[date] = content;
@@ -216,7 +220,9 @@ export async function runMonthlyRollup(): Promise<void> {
     } else {
       const sampled = monthDates.filter((_, i) => i % 4 === 0).slice(0, 10);
       sourceByLang[lang].label =
-        lang === "en" ? `${sampled.length} daily reports (sampled every 4 days)` : `${sampled.length} 份日报（每4日采样）`;
+        lang === "en"
+          ? `${sampled.length} daily reports (sampled every 4 days)`
+          : `${sampled.length} 份日报（每4日采样）`;
       for (const date of sampled) {
         const content = readDailyDigest(date, lang);
         if (content) sourceByLang[lang].digests[date] = content;
@@ -272,7 +278,11 @@ export async function runMonthlyRollup(): Promise<void> {
         enFooter;
       console.log(`  Saved ${saveFile(enContent, dateStr, "ai-monthly.md")}`);
       if (digestRepo) {
-        const url = await createGitHubIssue(`📆 AI Tools Ecosystem Monthly Report ${monthStr}`, enContent, "monthly-en");
+        const url = await createGitHubIssue(
+          `📆 AI Tools Ecosystem Monthly Report ${monthStr}`,
+          enContent,
+          "monthly-en",
+        );
         console.log(`  Created monthly issue (en): ${url}`);
       }
     }

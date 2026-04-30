@@ -182,7 +182,8 @@ export async function fetchSkillsData(repo: string): Promise<{ prs: GitHubItem[]
 }
 
 const GITHUB_ISSUE_BODY_LIMIT = 65536;
-const TRUNCATION_NOTICE = "\n\n---\n> Content exceeds the GitHub Issue limit. See the committed Markdown file for the full report.";
+const TRUNCATION_NOTICE =
+  "\n\n---\n> Content exceeds the GitHub Issue limit. See the committed Markdown file for the full report.";
 
 function defangGitHubNotifications(body: string): string {
   return body

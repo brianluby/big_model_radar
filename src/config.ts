@@ -78,7 +78,11 @@ export function loadConfig(configPath = "config.yml"): RadarConfig {
   let raw: RawConfig;
   try {
     raw = yaml.load(fs.readFileSync(resolved, "utf-8")) as RawConfig;
-  } catch {
+  } catch (err) {
+    if ((err as { code?: string })?.code !== "ENOENT") {
+      const detail = err instanceof Error ? err.message : String(err);
+      throw new Error(`[config] Failed to load ${configPath}: ${detail}`);
+    }
     console.log(`[config] ${configPath} not found — using built-in defaults.`);
     return {
       cliRepos: DEFAULT_CLI_REPOS,
@@ -102,7 +106,10 @@ export function loadConfig(configPath = "config.yml"): RadarConfig {
     Array.isArray(raw?.first_party_agents) && raw.first_party_agents.length > 0
       ? raw.first_party_agents.map(toRepoConfig)
       : raw?.openclaw?.id && raw.openclaw.repo
-        ? [toRepoConfig(raw.openclaw), ...DEFAULT_FIRST_PARTY_AGENTS.filter((cfg) => cfg.id !== raw.openclaw?.id)]
+        ? [
+            toRepoConfig(raw.openclaw),
+            ...DEFAULT_FIRST_PARTY_AGENTS.filter((cfg) => cfg.id !== raw.openclaw?.id),
+          ]
         : DEFAULT_FIRST_PARTY_AGENTS;
 
   const peerAgents =

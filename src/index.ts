@@ -361,13 +361,12 @@ function buildAgentReportContent(
 
 async function saveWebReport(
   webResults: WebFetchResult[],
-  webState: WebState,
   utcStr: string,
   dateStr: string,
   digestRepo: string,
   footer: string,
   lang: "zh" | "en" = "zh",
-): Promise<void> {
+): Promise<boolean> {
   const hasNewContent = webResults.some((r) => r.newItems.length > 0);
 
   if (hasNewContent) {
@@ -410,23 +409,27 @@ async function saveWebReport(
       console.log(`  Saved ${saveFile(webContent, dateStr, fileName)}`);
 
       if (digestRepo) {
-        const webTitle =
-          lang === "en"
-            ? `🌐 Official AI Content Report ${dateStr}${isFirstRun ? " (First Crawl)" : ""}`
-            : `🌐 AI 官方内容追踪报告 ${dateStr}${isFirstRun ? "（首次全量）" : ""}`;
-        const webLabel = lang === "en" ? "web-en" : "web";
-        const webUrl = await createGitHubIssue(webTitle, webContent, webLabel);
-        console.log(`  Created web issue (${lang}): ${webUrl}`);
+        try {
+          const webTitle =
+            lang === "en"
+              ? `🌐 Official AI Content Report ${dateStr}${isFirstRun ? " (First Crawl)" : ""}`
+              : `🌐 AI 官方内容追踪报告 ${dateStr}${isFirstRun ? "（首次全量）" : ""}`;
+          const webLabel = lang === "en" ? "web-en" : "web";
+          const webUrl = await createGitHubIssue(webTitle, webContent, webLabel);
+          console.log(`  Created web issue (${lang}): ${webUrl}`);
+        } catch (err) {
+          console.error(`  [web/${lang}] Issue creation failed: ${err}`);
+        }
       }
+      return true;
     } catch (err) {
       console.error(`  [web/${lang}] Report generation failed: ${err}`);
+      return false;
     }
   } else {
     console.log(`  [web/${lang}] No new content detected, skipping report.`);
+    return true;
   }
-
-  // Web state is saved by the caller after all language variants complete,
-  // so we don't save it here per-lang.
 }
 
 async function saveTrendingReport(
@@ -524,8 +527,15 @@ async function saveResearchReport(
   lang: "zh" | "en" = "zh",
 ): Promise<void> {
   console.log(`  [research/${lang}] Calling LLM for research priorities...`);
+  const fileName = reportFile("ai-research", lang);
+  const header =
+    lang === "en"
+      ? `# Research Priorities Digest ${dateStr}\n\n> Derived from the daily radar | Generated: ${utcStr} UTC\n\n---\n\n`
+      : `# 研究优先级简报 ${dateStr}\n\n> 基于当日雷达综合生成 | 生成时间: ${utcStr} UTC\n\n---\n\n`;
+  let researchSummary: string;
+
   try {
-    const researchSummary = await callLlm(
+    researchSummary = await callLlm(
       buildResearchPriorityPrompt(
         cliDigests,
         firstPartyDigests,
@@ -541,21 +551,25 @@ async function saveResearchReport(
       ),
       8192,
     );
-    const fileName = reportFile("ai-research", lang);
-    const header =
+  } catch (err) {
+    console.error(`  [research/${lang}] Report generation failed, writing fallback report: ${err}`);
+    researchSummary =
       lang === "en"
-        ? `# Research Priorities Digest ${dateStr}\n\n> Derived from the daily radar | Generated: ${utcStr} UTC\n\n---\n\n`
-        : `# 研究优先级简报 ${dateStr}\n\n> 基于当日雷达综合生成 | 生成时间: ${utcStr} UTC\n\n---\n\n`;
-    const content = header + researchSummary + footer;
-    console.log(`  Saved ${saveFile(content, dateStr, fileName)}`);
-    if (digestRepo) {
+        ? "⚠️ Research-priority generation failed. The source daily radar reports were generated successfully, but the synthesis step did not complete. Re-run the workflow or inspect the daily reports directly."
+        : "⚠️ 研究优先级生成失败。当日雷达源报告已成功生成，但综合分析步骤未完成。请重新运行 workflow，或直接查看当日各项日报。";
+  }
+
+  const content = header + researchSummary + footer;
+  console.log(`  Saved ${saveFile(content, dateStr, fileName)}`);
+  if (digestRepo) {
+    try {
       const title = lang === "en" ? `🧭 Research Priorities ${dateStr}` : `🧭 研究优先级简报 ${dateStr}`;
       const label = lang === "en" ? "research-en" : "research";
       const url = await createGitHubIssue(title, content, label);
       console.log(`  Created research issue (${lang}): ${url}`);
+    } catch (err) {
+      console.error(`  [research/${lang}] Issue creation failed: ${err}`);
     }
-  } catch (err) {
-    console.error(`  [research/${lang}] Report generation failed: ${err}`);
   }
 }
 
@@ -635,16 +649,26 @@ async function main(): Promise<void> {
       comparisonCalls.push(
         Promise.all([
           callLlm(buildComparisonPrompt(zhSummaries.cliDigests, dateStr, "zh")),
-          callLlm(buildPeersComparisonPrompt(zhSummaries.firstPartyDigests, zhSummaries.peerDigests, dateStr, "zh")),
-        ]).then(([c, p]) => { comparison = c; peersComparison = p; }),
+          callLlm(
+            buildPeersComparisonPrompt(zhSummaries.firstPartyDigests, zhSummaries.peerDigests, dateStr, "zh"),
+          ),
+        ]).then(([c, p]) => {
+          comparison = c;
+          peersComparison = p;
+        }),
       );
     }
     if (genEn && enSummaries) {
       comparisonCalls.push(
         Promise.all([
           callLlm(buildComparisonPrompt(enSummaries.cliDigests, dateStr, "en")),
-          callLlm(buildPeersComparisonPrompt(enSummaries.firstPartyDigests, enSummaries.peerDigests, dateStr, "en")),
-        ]).then(([c, p]) => { enComparison = c; enPeersComparison = p; }),
+          callLlm(
+            buildPeersComparisonPrompt(enSummaries.firstPartyDigests, enSummaries.peerDigests, dateStr, "en"),
+          ),
+        ]).then(([c, p]) => {
+          enComparison = c;
+          enPeersComparison = p;
+        }),
       );
     }
     await Promise.all(comparisonCalls);
@@ -728,12 +752,16 @@ async function main(): Promise<void> {
   }
 
   // Save web reports, then persist web state exactly once
-  await Promise.all([
-    genZh ? saveWebReport(webResults, webState, utcStr, dateStr, digestRepo, footer, "zh") : Promise.resolve(),
-    genEn ? saveWebReport(webResults, webState, utcStr, dateStr, digestRepo, enFooter, "en") : Promise.resolve(),
+  const webStateSafeToPersist = await Promise.all([
+    genZh ? saveWebReport(webResults, utcStr, dateStr, digestRepo, footer, "zh") : Promise.resolve(true),
+    genEn ? saveWebReport(webResults, utcStr, dateStr, digestRepo, enFooter, "en") : Promise.resolve(true),
   ]);
-  saveWebState(webState);
-  console.log("  [web] State saved.");
+  if (webStateSafeToPersist.every(Boolean)) {
+    saveWebState(webState);
+    console.log("  [web] State saved.");
+  } else {
+    console.log("  [web] State not saved because at least one requested web report failed.");
+  }
 
   await Promise.all([
     genZh && zhSummaries
